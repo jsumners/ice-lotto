@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,6 +81,11 @@ public class DrawingController {
     }
     modelAndView.addObject("drawingId", id);
 
+    User user = this.getUser();
+    if (user != null) {
+      modelAndView.addObject("user", user);
+    }
+
     modelAndView.setViewName("drawing");
     return modelAndView;
   }
@@ -90,14 +97,16 @@ public class DrawingController {
   )
   public ModelAndView previousDrawing() {
     ModelAndView mav = new ModelAndView();
-    mav.setViewName("drawing");
+    String viewName = "forward:/drawing";
 
     Optional<Drawing> drawingOptional = this.drawingService.previousDrawing();
     if (drawingOptional.isPresent()) {
-      mav.addObject("drawing", drawingOptional.get());
-      mav.addObject("drawingId", drawingOptional.get().getId());
+      viewName += "/" + drawingOptional.get().getId();
+    } else {
+      viewName += "/-1";
     }
 
+    mav.setViewName(viewName);
     return mav;
   }
 
@@ -305,5 +314,26 @@ public class DrawingController {
     }
 
     return gameItem;
+  }
+
+  /**
+   * Looks up the currently logged in user via the Spring Security context
+   * and returns an instance of {@link com.jrfom.icelotto.model.User}.
+   *
+   * @return {@code null} if a user is not found otherwise and instance of
+   * {@link com.jrfom.icelotto.model.User}.
+   */
+  private User getUser() {
+    User user = null;
+    UserDetails userDetails =
+      (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Optional<User> userOptional =
+      this.userService.findByGw2DisplayName(userDetails.getUsername());
+
+    if (userOptional.isPresent()) {
+      user = userOptional.get();
+    }
+
+    return user;
   }
 }

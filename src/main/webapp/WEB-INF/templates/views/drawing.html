@@ -21,7 +21,7 @@
       <header id="drawingHeader" class="row">
         <div class="col-lg-7">
           <p class="lead" th:if="${!drawing.inProgress and drawing.ended == null}">
-            Scheduled for <span th:text="${drawing.scheduled}">the end of days</span>
+            Scheduled for <span th:text="${user.localizeDatetime(drawing.scheduled)}">the end of days</span>
           </p>
 
           <p class="lead" th:if="${drawing.inProgress}">
@@ -29,7 +29,7 @@
           </p>
 
           <p class="lead" th:if="${drawing.ended}">
-            Drawing ended <span th:text="${drawing.ended}">in the distant past</span>
+            Drawing ended <span th:text="${user.localizeDatetime(drawing.ended)}">in the distant past</span>
           </p>
         </div>
 

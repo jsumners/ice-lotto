@@ -15,7 +15,8 @@
       updateUI = function(){};
 
   drawingEndedCallback = function(response) {
-    var data = JSON.parse(response.body);
+    var data = JSON.parse(response.body),
+        formatSubscription = {};
 
     if (data.ended) {
       endedSubscription.unsubscribe ? endedSubscription.unsubscribe() : $.noop();
@@ -23,7 +24,20 @@
       $("#endBtn").fadeOut().remove();
       $(".draw-btn").fadeOut().remove();
       $(".money-draw-btn").fadeOut().remove();
-      $("#drawingHeader .lead:first").text("Drawing ended " + data.endTime);
+
+      /*formatSubscription = socketManager.subscribe("/user/topic/epoch/second/formatted", function(response) {
+        formatSubscription.unsubscribe();
+        $("#drawingHeader .lead:first").text("Drawing ended " + response.body);
+      });
+      socketManager.send("/app/format/epoch/second", {}, data.endTime.epochSecond);*/
+      $.ajax({
+        url: "/format/epoch/second/" + data.endTime.epochSecond,
+        contentType: "text/plain",
+        dataType: "text",
+        success: function(data, status, jqXHR) {
+          $("#drawingHeader .lead:first").text("Drawing ended " + data);
+        }
+      });
     }
   };
 

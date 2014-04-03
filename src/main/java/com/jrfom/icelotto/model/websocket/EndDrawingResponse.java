@@ -1,13 +1,10 @@
 package com.jrfom.icelotto.model.websocket;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.jrfom.icelotto.serializers.InstantSerializer;
 import org.threeten.bp.Instant;
 
 public class EndDrawingResponse {
   private Long drawingId;
   private boolean ended;
-  @JsonSerialize(using = InstantSerializer.class)
   private Instant endTime;
 
   public EndDrawingResponse() {
