@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title></title>
+</head>
+<body>
+
+<div th:fragment="content">
+  <th:block th:if="${userErrorMessage != null}">
+    <!--/* Shown when we can't find the user for some reason */-->
+    <div class="panel panel-danger">
+      <header class="panel-heading">
+        <h3 class="panel-title">Error</h3>
+      </header>
+
+      <div class="panel-body" th:text="${userErrorMessage}">
+        Nope.
+      </div>
+    </div>
+  </th:block>
+
+  <th:block th:if="${userErrorMessage == null}">
+
+    <th:block th:if="${message != null}">
+      <!--/* Used for any other type of message */-->
+      <div class="alert alert-dismissable" th:classappend="${(error != null and #bools.isTrue(error)) ? 'alert-danger' : 'alert-success'}">
+        <button type="button" class="btn close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <span th:text="${message}">Oops</span>
+      </div>
+    </th:block>
+
+    <p class="lead">
+      <span th:text="${user.gw2DisplayName}" th:remove="tag">Foo.1234</span>
+      <small>(
+        <a th:href="@{/account/edit}">edit</a> ||
+        <a th:href="@{/account/change/password}">change password</a>
+      )</small>
+    </p>
+
+    <dl>
+      <dt>Display Name</dt>
+      <dd th:text="${user.displayName}">Foo.1234</dd>
+
+      <dt>Email</dt>
+      <dd th:text="${user.email ?: 'none'}">foo@example.com</dd>
+
+      <dt>Time Zone</dt>
+      <dd th:text="${user.timeZone ?: 'GMT'}">GMT</dd>
+
+      <dt>Date Format</dt>
+      <dd th:text="${user.datetimeFormat ?: 'yyyy-MM-dd HH:mm Z'}">yyyy-MM-dd HH:mm Z</dd>
+
+      <dt>Characters</dt>
+      <dd>
+        <ul id="charactersList">
+          <li th:each="character : ${user.characters}"
+              th:text="${character.name}"
+              data:character-id="${character.id}">
+            fooalicious
+          </li>
+        </ul>
+        <a id="addCharacterBtn" class="btn btn-xs btn-default">Add Character</a>
+      </dd>
+    </dl>
+
+    <script th:src="@{/local/js/account/addCharacter.js}" src="addCharacter.js" id="addCharacterScript" data:account-url="@{/account}"></script>
+  </th:block>
+
+</div>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 import com.jrfom.icelotto.exception.UserNotFoundException;
+import com.jrfom.icelotto.model.Character;
 import com.jrfom.icelotto.model.User;
 
 public interface UserService {
@@ -16,4 +17,6 @@ public interface UserService {
   List<User> findAllLike(String term);
   List<User> findAllOrderByGw2DisplayName();
   User save(User user);
+
+  Character addCharacter(final User user, final String characterName);
 }

@@ -11,87 +11,89 @@
   <div th:if="${drawing == null}">
     <h4>
       Drawing does not exist.<br />
-      <small>Drawing id = <span th:text="${drawingId}">-1</span></small>
+      <small>Drawing id = <span th:text="${drawingId ?: 'unknown'}">-1</span></small>
     </h4>
   </div>
 
-  <div th:if="${drawing != null}" class="drawing-container" data:drawing-id="${drawingId}" data:drawing-in-progress="${drawing.inProgress}">
+  <th:block th:if="${drawing != null}">
+    <div class="drawing-container" data:drawing-id="${drawingId}" data:drawing-in-progress="${drawing.inProgress}">
 
-    <header id="drawingHeader" class="row">
-      <div class="col-lg-7">
-        <p class="lead" th:if="${!drawing.inProgress and drawing.ended == null}">
-          Scheduled for <span th:text="${drawing.scheduled}">the end of days</span>
-        </p>
+      <header id="drawingHeader" class="row">
+        <div class="col-lg-7">
+          <p class="lead" th:if="${!drawing.inProgress and drawing.ended == null}">
+            Scheduled for <span th:text="${drawing.scheduled}">the end of days</span>
+          </p>
 
-        <p class="lead" th:if="${drawing.inProgress}">
-          Drawing underway
-        </p>
+          <p class="lead" th:if="${drawing.inProgress}">
+            Drawing underway
+          </p>
 
-        <p class="lead" th:if="${drawing.ended}">
-          Drawing ended <span th:text="${drawing.ended}">in the distant past</span>
-        </p>
-      </div>
+          <p class="lead" th:if="${drawing.ended}">
+            Drawing ended <span th:text="${drawing.ended}">in the distant past</span>
+          </p>
+        </div>
 
-      <div class="col-lg-5 text-right" sec:authorize="hasRole('ROLE_ADMIN')">
-          <div class="btn-group" th:if="${!drawing.inProgress and drawing.ended == null}">
-            <a id="depositBtn" class="btn btn-default deposit-btn">Add Entry</a>
-          </div>
+        <div class="col-lg-5 text-right" sec:authorize="hasRole('ROLE_ADMIN')">
+            <div class="btn-group" th:if="${!drawing.inProgress and drawing.ended == null}">
+              <a id="depositBtn" class="btn btn-default deposit-btn">Add Entry</a>
+            </div>
 
-          <div class="btn-group" th:if="${drawing.ended == null}">
-            <a id="startBtn" class="btn btn-default" th:classappend="${drawing.inProgress} ? disabled">Start</a>
-            <a id="endBtn" class="btn btn-default" th:classappend="${!drawing.inProgress} ? disabled">End</a>
-          </div>
-      </div>
-    </header>
+            <div class="btn-group" th:if="${drawing.ended == null}">
+              <a id="startBtn" class="btn btn-default" th:classappend="${drawing.inProgress} ? disabled">Start</a>
+              <a id="endBtn" class="btn btn-default" th:classappend="${!drawing.inProgress} ? disabled">End</a>
+            </div>
+        </div>
+      </header>
 
-    <div th:replace="fragments/prizePool::fragment('small', ${drawing.smallPool}, ${drawing.smallPoolTotal})"></div>
+      <div th:replace="fragments/prizePool::fragment('small', ${drawing.smallPool}, ${drawing.smallPoolTotal})"></div>
 
-    <div th:replace="fragments/prizePool::fragment('large', ${drawing.largePool}, ${drawing.largePoolTotal})"></div>
+      <div th:replace="fragments/prizePool::fragment('large', ${drawing.largePool}, ${drawing.largePoolTotal})"></div>
 
-    <template id="winnerRowTemplate">
-      <tr class="success text-center winner-row">
-        <td>
-          <small>
-            Winner: <strong class="winner-name"></strong>&nbsp;&Lt;&Gt;&nbsp;
-            Item: <a class="item-won-link" target="_blank"></a>
-          </small>
-        </td>
-      </tr>
-    </template>
+      <template id="winnerRowTemplate">
+        <tr class="success text-center winner-row">
+          <td>
+            <small>
+              Winner: <strong class="winner-name"></strong>&nbsp;&Lt;&Gt;&nbsp;
+              Item: <a class="item-won-link" target="_blank"></a>
+            </small>
+          </td>
+        </tr>
+      </template>
 
-    <template id="fillerImage">
-      <div class="text-center prize-item">
-        <img th:src="@{/local/images/filler.jpg}" src="filler.jpg" class="gw-item-icon" />
-      </div>
-    </template>
+      <template id="fillerImage">
+        <div class="text-center prize-item">
+          <img th:src="@{/local/images/filler.jpg}" src="filler.jpg" class="gw-item-icon" />
+        </div>
+      </template>
 
-    <script>
-      $(".main-content").on("click", ".gw-item-icon", function() {
-        var $this = $(this),
-            $i = $this.siblings("i");
+      <script>
+        $(".main-content").on("click", ".gw-item-icon", function() {
+          var $this = $(this),
+              $i = $this.siblings("i");
 
-        $.ajax({
-          url: "/item/" + $i.data("id") + "/count/" + $i.data("count"),
-          dataType: "json",
-          success: function(data, status, jqXHR) {
-            BootstrapDialog.show({
-              title: $i.data("name"),
-              message: "Chat link: " + data.linkString,
-              type: BootstrapDialog.TYPE_INFO
-            });
-          }
+          $.ajax({
+            url: "/item/" + $i.data("id") + "/count/" + $i.data("count"),
+            dataType: "json",
+            success: function(data, status, jqXHR) {
+              BootstrapDialog.show({
+                title: $i.data("name"),
+                message: "Chat link: " + data.linkString,
+                type: BootstrapDialog.TYPE_INFO
+              });
+            }
+          });
         });
-      });
-    </script>
+      </script>
 
-  </div>
+    </div>
 
-  <script th:src="@{/local/js/drawingMonitor.js}" src="drawingMonitor.js"></script>
+    <script th:src="@{/local/js/drawingMonitor.js}" src="drawingMonitor.js"></script>
 
-  <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-    <script th:src="@{/local/js/admin/drawingRunner.js}" src="drawingRunner.js"></script>
-    <div th:replace="fragments/admin/addItemModal :: content" th:remove="tag"></div>
-    <div th:replace="fragments/admin/depositModal :: content(${drawing})"></div>
+    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+      <script th:src="@{/local/js/admin/drawingRunner.js}" src="drawingRunner.js"></script>
+      <div th:replace="fragments/admin/addItemModal :: content" th:remove="tag"></div>
+      <div th:replace="fragments/admin/depositModal :: content(${drawing})"></div>
+    </th:block>
   </th:block>
 </div>
 

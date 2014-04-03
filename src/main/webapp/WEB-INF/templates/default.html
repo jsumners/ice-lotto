@@ -27,6 +27,21 @@
 
     <link rel="stylesheet" th:href="@{/bootstrap-dtpicker/css/bootstrap-datetimepicker.min.css}" href="bootstrap-datetimepicker.min.css" />
     <script th:src="@{/bootstrap-dtpicker/js/bootstrap-datetimepicker.min.js}" src="bootstrap-datetimepicker.min.js"></script>
+
+    <!--/* So that we can do authenticated AJAX requests */-->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <script>
+      var CSRF = {};
+      $(function() {
+        CSRF.token = $("meta[name=_csrf]").attr("content");
+        CSRF.header = $("meta[name=_csrf_header]").attr("content");
+
+        $(document).ajaxSend(function(evt, jqXHR, options) {
+          jqXHR.setRequestHeader(CSRF.header, CSRF.token);
+        });
+      });
+    </script>
   </th:block>
 </head>
 <body>

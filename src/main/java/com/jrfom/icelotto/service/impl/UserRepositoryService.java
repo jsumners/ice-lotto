@@ -6,7 +6,8 @@ import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
 import com.jrfom.icelotto.exception.UserNotFoundException;
-import com.jrfom.icelotto.model.User;
+import com.jrfom.icelotto.model.*;
+import com.jrfom.icelotto.model.Character;
 import com.jrfom.icelotto.repository.UserRepository;
 import com.jrfom.icelotto.service.UserService;
 import org.slf4j.Logger;
@@ -118,5 +119,17 @@ public class UserRepositoryService implements UserService {
   @Transactional
   public User save(User user) {
     return this.userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public Character addCharacter(final User user, final String characterName) {
+    Character character = new Character(characterName);
+    User localUser = user;
+    localUser.getCharacters().add(character);
+    localUser = this.save(localUser);
+
+    character = user.characterWithName(characterName);
+    return character;
   }
 }

@@ -29,12 +29,21 @@
               <li><a th:href="@{/admin/users}">Users</a></li>
             </ul>
           </li>
-          <li><a href="#">bar</a></li>
-          <li><a href="#">foobar</a> </li>
+
+          <li class="dropdown" sec:authorize="hasRole('ROLE_USER')">
+            <a class="clickable dropdown-toggle" data-toggle="dropdown">Drawings <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a th:href="@{/index}">Current</a></li>
+              <li><a th:href="@{/drawing/previous}">Previous</a></li>
+            </ul>
+          </li>
         </ul>
 
         <p class="navbar-text navbar-right" sec:authorize="hasRole('ROLE_USER')">
-          Signed in as <a class="navbar-link" sec:authentication="name">Foo User</a>
+          Signed in as
+          <a class="navbar-link" sec:authentication="name" th:href="@{/account}">
+            Foo User
+          </a>
           (<a th:href="@{/logout}" class="navbar-link">logout</a>)
         </p>
       </div>

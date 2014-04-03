@@ -29,6 +29,10 @@ body {
   margin-bottom: 10px;
 }
 
+.form-signin .new-password-field {
+  border-radius: 0;
+}
+
 .gw-item-icon {
   border: 1px solid #ccc;
   height: 64px;

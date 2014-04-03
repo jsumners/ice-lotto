@@ -202,6 +202,20 @@ public class User {
     this.characters.add(character);
   }
 
+  @Transient
+  public Character characterWithName(String name) {
+    Character result = null;
+
+    for (Character character : this.characters) {
+      if (character.getName().equals(name)) {
+        result = character;
+        break;
+      }
+    }
+
+    return result;
+  }
+
   /**
    * Determine if the user has any entries in a specified drawing.
    *
