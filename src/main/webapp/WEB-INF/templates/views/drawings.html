@@ -29,7 +29,6 @@
 
       <tbody>
         <!--/* TODO: add links to drawings and pools */-->
-        <!--/* TODO: add support for formating JSR-310 dates (new dialect?) */-->
         <tr th:each="drawing: ${drawingsList}" data:drawing-id="${drawing.id}">
           <td class="text-center"><a th:href="@{/drawing/__${drawing.id}__}">View</a></td>
           <td th:text="${user.localizeDatetime(drawing.scheduled)}">Not Set</td>
