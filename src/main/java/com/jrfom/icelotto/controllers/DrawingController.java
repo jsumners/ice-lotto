@@ -63,6 +63,7 @@ public class DrawingController {
 
     modelAndView.setViewName("drawings");
     modelAndView.addObject("drawingsList", drawingList);
+    modelAndView.addObject("user", this.getUser());
 
     return modelAndView;
   }

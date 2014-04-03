@@ -32,9 +32,9 @@
         <!--/* TODO: add support for formating JSR-310 dates (new dialect?) */-->
         <tr th:each="drawing: ${drawingsList}" data:drawing-id="${drawing.id}">
           <td class="text-center"><a th:href="@{/drawing/__${drawing.id}__}">View</a></td>
-          <td th:text="${drawing.scheduled}">Not Set</td>
-          <td th:text="${drawing.started} ?: 'Not Started'">Not Started</td>
-          <td th:text="${drawing.ended} ?: 'Not Yet Held'">Not Set</td>
+          <td th:text="${user.localizeDatetime(drawing.scheduled)}">Not Set</td>
+          <td th:text="${drawing.started} ? ${user.localizeDatetime(drawing.started)} : 'Not Started'">Not Started</td>
+          <td th:text="${drawing.ended} ? ${user.localizeDatetime(drawing.started)} : 'Not Yet Held'">Not Set</td>
           <td th:text="${drawing.smallPool} ? ${drawing.smallPool.id}">Not Set</td>
           <td th:text="${drawing.largePool} ? ${drawing.largePool.id}">Not Set</td>
           <td class="text-center" colspan="4">
