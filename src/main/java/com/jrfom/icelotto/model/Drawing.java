@@ -32,6 +32,9 @@ public class Drawing {
   @Column
   private Boolean inProgress;
 
+  @Column
+  private Boolean duplicated;
+
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinColumn(referencedColumnName = "id")
   private PrizePool smallPool;
@@ -47,11 +50,13 @@ public class Drawing {
   protected Drawing() {
     this.entries = new HashSet<>(0);
     this.inProgress = false;
+    this.duplicated = false;
   }
 
   public Drawing(Instant scheduled, PrizePool smallPool, PrizePool largePool) {
     this.scheduled = scheduled;
     this.inProgress = false;
+    this.duplicated = false;
     this.smallPool = smallPool;
     this.largePool = largePool;
   }
@@ -94,11 +99,19 @@ public class Drawing {
   }
 
   public Boolean isInProgress() {
-    return this.inProgress;
+    return (this.inProgress == null) ? false : this.inProgress;
   }
 
   public void setInProgress(Boolean inProgress) {
     this.inProgress = inProgress;
+  }
+
+  public Boolean isDuplicated() {
+    return (this.duplicated == null) ? false : this.duplicated;
+  }
+
+  public void setDuplicated(Boolean duplicated) {
+    this.duplicated = duplicated;
   }
 
   public PrizePool getSmallPool() {

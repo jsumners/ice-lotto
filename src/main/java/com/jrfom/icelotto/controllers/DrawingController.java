@@ -15,17 +15,18 @@ import com.jrfom.icelotto.util.ImageDownloader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.threeten.bp.Instant;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 
 @Controller
 public class DrawingController {
@@ -109,6 +110,34 @@ public class DrawingController {
 
     mav.setViewName(viewName);
     return mav;
+  }
+
+  @RequestMapping(
+    value = "/admin/drawing/duplicate",
+    method = RequestMethod.POST,
+    consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  @ResponseBody
+  public String duplicate(@RequestBody DuplicateDrawingMessage message) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd @ HH:mm Z");
+    Instant startInstant = ZonedDateTime.parse(message.getStartDateTime(), formatter).toInstant();
+
+    Optional<Drawing> drawingOptional = this.drawingService.findById(message.getDrawingId());
+    if (drawingOptional.isPresent()) {
+      Drawing toDuplicate = drawingOptional.get();
+      PrizePool newSmall = this.copyPool(toDuplicate.getSmallPool());
+      PrizePool newLarge = this.copyPool(toDuplicate.getLargePool());
+
+      // No idea why we can't use .create() here but it generates a stupid
+      // "can't persist detached entity" exception.
+      this.drawingService.save(new Drawing(startInstant, newSmall, newLarge));
+
+      toDuplicate.setDuplicated(true);
+      this.drawingService.save(toDuplicate);
+    }
+
+    return "done";
   }
 
   @MessageMapping("/admin/drawing/item/add")
@@ -315,6 +344,43 @@ public class DrawingController {
     }
 
     return gameItem;
+  }
+
+  /**
+   * Copies a given {@link com.jrfom.icelotto.model.PrizePool} to a new
+   * instance while omitting won items and entrants.
+   *
+   * @param pool The {@link com.jrfom.icelotto.model.PrizePool} to copy.
+   *
+   * @return The new intance minus won items and entrants.
+   */
+  private PrizePool copyPool(final PrizePool pool) {
+/*    Optional<PrizePool> poolOptional = this.prizePoolService.create();
+    if (!poolOptional.isPresent()) {
+      return null;
+    }*/
+
+    PrizePool result = new PrizePool();
+    List<PrizeTier> tiers = pool.getPrizeTiers();
+
+    int pos = 1;
+    for (PrizeTier tier : tiers) {
+      PrizeTier newTier = new PrizeTier();
+      PrizeDrawResult drawResult = tier.getPrizeDrawResult();
+      int wonItem = (drawResult != null) ? drawResult.getItemDrawNumber() : -1;
+
+      for (int i = 1; i < 11; i += 1) {
+        if (i != wonItem) {
+          PrizeItem prizeItem = tier.getItemAtPosition(i);
+          newTier.setItemAtPosition(i, prizeItem);
+        }
+      }
+
+      result.setTierAtPosition(pos, newTier);
+      pos += 1;
+    }
+
+    return result;
   }
 
   /**

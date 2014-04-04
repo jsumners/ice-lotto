@@ -3,6 +3,8 @@ package com.jrfom.icelotto.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
 import com.google.common.base.Optional;
@@ -24,6 +26,9 @@ public class DrawingRepositoryService implements DrawingService {
 
   @Resource
   private DrawingRepository drawingRepository;
+
+  @PersistenceContext
+  private EntityManager entityManager;
 
   @Override
   @Transactional
@@ -116,6 +121,6 @@ public class DrawingRepositoryService implements DrawingService {
   @Override
   @Transactional
   public Drawing save(Drawing drawing) {
-    return this.drawingRepository.save(drawing);
+    return this.entityManager.merge(drawing);
   }
 }

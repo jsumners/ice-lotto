@@ -11,5 +11,5 @@ public interface PrizePoolService {
   void delete(Long prizePoolId) throws PrizePoolNotFoundException;
   List<PrizePool> findAll();
   Optional<PrizePool> findById(Long id);
-  void save(PrizePool prizePool);
+  PrizePool save(PrizePool prizePool);
 }

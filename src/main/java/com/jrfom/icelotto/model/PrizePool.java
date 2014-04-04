@@ -213,6 +213,43 @@ public class PrizePool {
   }
 
   @Transient
+  public void setTierAtPosition(final Integer position, final PrizeTier tier) {
+    switch (position) {
+      case 1:
+        this.setTier1(tier);
+        break;
+      case 2:
+        this.setTier2(tier);
+        break;
+      case 3:
+        this.setTier3(tier);
+        break;
+      case 4:
+        this.setTier4(tier);
+        break;
+      case 5:
+        this.setTier5(tier);
+        break;
+      case 6:
+        this.setTier6(tier);
+        break;
+      case 7:
+        this.setTier7(tier);
+        break;
+      case 8:
+        this.setTier8(tier);
+        break;
+      case 9:
+        this.setTier9(tier);
+        break;
+      case 10:
+        this.setTier10(tier);
+        break;
+      default:
+    }
+  }
+
+  @Transient
   public List<PrizeDrawResult> getDrawingResults() {
     List<PrizeTier> prizeTiers = this.getPrizeTiers();
     List<PrizeDrawResult> results = new ArrayList<>();

@@ -292,6 +292,43 @@ public class PrizeTier {
   }
 
   @Transient
+  public void setItemAtPosition(final Integer position, final PrizeItem item) {
+    switch (position) {
+      case 1:
+        this.setItem1(item);
+        break;
+      case 2:
+        this.setItem2(item);
+        break;
+      case 3:
+        this.setItem3(item);
+        break;
+      case 4:
+        this.setItem4(item);
+        break;
+      case 5:
+        this.setItem5(item);
+        break;
+      case 6:
+        this.setItem6(item);
+        break;
+      case 7:
+        this.setItem7(item);
+        break;
+      case 8:
+        this.setItem8(item);
+        break;
+      case 9:
+        this.setItem9(item);
+        break;
+      case 10:
+        this.setItem10(item);
+        break;
+      default:
+    }
+  }
+
+  @Transient
   public void shuffleEntries() {
     log.debug("Shuffling entries for tier {}", this.id);
     if (this.shuffledTierEntries.size() > 0) {

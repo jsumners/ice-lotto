@@ -3,6 +3,8 @@ package com.jrfom.icelotto.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
 import com.jrfom.icelotto.exception.GameItemNotFoundException;
@@ -20,6 +22,9 @@ public class GameItemRepositoryService implements GameItemService {
 
   @Resource
   private GameItemRepository gameItemRepository;
+
+  @PersistenceContext
+  private EntityManager entityManager;
 
   /**
    * {@inheritDoc}
@@ -103,6 +108,6 @@ public class GameItemRepositoryService implements GameItemService {
   @Override
   @Transactional
   public void save(GameItem gameItem) {
-    this.gameItemRepository.save(gameItem);
+    this.entityManager.merge(gameItem);
   }
 }

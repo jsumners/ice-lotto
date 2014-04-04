@@ -39,7 +39,7 @@
           <td class="text-center" colspan="4">
             <div class="btn-group">
               <a th:if="${drawing.ended == null and drawing.started == null}" class="btn btn-default btn-xs" th:href="@{/drawing/__${drawing.id}__}">Edit</a>
-              <a th:if="${drawing.ended != null}" class="btn btn-default btn-xs">Duplicate</a>
+              <a th:if="${drawing.ended != null and not drawing.duplicated}" class="btn btn-default btn-xs duplicate-btn">Duplicate</a>
               <a class="btn btn-default btn-xs disabled">Delete</a>
             </div>
           </td>
@@ -59,6 +59,9 @@
         </ul>
       </div>
     </div>
+
+    <i class="hidden" id="duplicateUrl" data:url="@{/admin/drawing/duplicate}"></i>
+    <script th:src="@{/local/js/admin/drawings.js}" src="drawings.js"></script>
   </div>
 </div>
 

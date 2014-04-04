@@ -3,6 +3,8 @@ package com.jrfom.icelotto.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
 import com.jrfom.icelotto.exception.PrizeTierNotFoundException;
@@ -31,6 +33,9 @@ public class PrizeTierRepositoryService implements PrizeTierService {
 
   @Resource
   private GameItemRepository gameItemRepository;
+
+  @PersistenceContext
+  private EntityManager entityManager;
 
   @Override
   @Transactional
@@ -88,7 +93,7 @@ public class PrizeTierRepositoryService implements PrizeTierService {
   @Override
   @Transactional
   public void save(PrizeTier prizeTier) {
-    this.prizeTierRepository.save(prizeTier);
+    this.entityManager.merge(prizeTier);
   }
 
   @Override

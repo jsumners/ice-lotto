@@ -3,6 +3,8 @@ package com.jrfom.icelotto.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
 import com.jrfom.icelotto.exception.PrizePoolNotFoundException;
@@ -21,6 +23,9 @@ public class PrizePoolRepositoryService implements PrizePoolService {
 
   @Resource
   private PrizePoolRepository prizePoolRepository;
+
+  @PersistenceContext
+  private EntityManager entityManager;
 
   @Override
   public Optional<PrizePool> create() {
@@ -76,8 +81,8 @@ public class PrizePoolRepositoryService implements PrizePoolService {
 
   @Override
   @Transactional
-  public void save(PrizePool prizePool) {
+  public PrizePool save(PrizePool prizePool) {
     log.debug("Saving prize pool with id: `{}`", prizePool.getId());
-    this.prizePoolRepository.save(prizePool);
+    return this.entityManager.merge(prizePool);
   }
 }
