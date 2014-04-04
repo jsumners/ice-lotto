@@ -20,6 +20,7 @@
 
     $startBtn.toggleClass("disabled");
     $endBtn.toggleClass("disabled");
+    $(".add-item-btn").addClass("disabled");
 
     // Deal with the item draw buttons
     $(".prize-pool-tier-row").each(function() {
@@ -30,7 +31,7 @@
         $(".draw-btn", $this).remove();
       }
     });
-    $(".draw-btn").removeClass("disabled invisible");
+    $(".draw-btn").removeClass("invisible");
 
     // Deal with the money draw buttons
     $(".deposit-btn").remove();
@@ -40,7 +41,7 @@
       if (parseInt($this.siblings(".pool-pot").text(), 10) === 0) {
         $this.remove();
       } else {
-        $this.removeClass("hidden disabled");
+        $this.removeClass("hidden");
       }
     });
 
