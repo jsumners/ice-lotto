@@ -17,6 +17,7 @@
   <script th:src="@{/bootstrap-dialog/js/bootstrap-dialog.min.js}" src="bootstrap-dialog.min.js"></script>
 
   <th:block sec:authorize="hasRole('ROLE_USER')">
+    <meta name="app-path" th:value="@{/}" />
     <script th:src="@{/stompjs/stomp.min.js}" src="stomp.min.js"></script>
     <script th:src="@{/sockjs/sockjs.min.js}" src="sockjs.min.js"></script>
     <script th:src="@{/local/js/socketManager.js}" src="socketManager.js"></script>

@@ -2,7 +2,7 @@ var AdminSocketManager = (function() {
   /* global SocketManager */
   "use strict";
   var obj = {},
-      endpoint = "/admin";
+      endpoint = $("meta[name=app-path]").attr("value") + "admin";
 
   obj.socketManager = new SocketManager(endpoint);
   obj.socketManager.connect();
