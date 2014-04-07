@@ -2,7 +2,7 @@ var UserSocketManager = (function() {
   /* global SocketManager */
   "use strict";
   var obj = {},
-      endpoint = $("meta[name=app-path]").attr("value") + "app";
+      endpoint = $("meta[name=app-path]").attr("content") + "app";
 
   obj.socketManager = new SocketManager(endpoint);
   obj.socketManager.connect();
