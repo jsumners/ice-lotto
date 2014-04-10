@@ -74,7 +74,7 @@
 
               <!--/* Add the item to the row using the item template */-->
               <div th:if="*{item__${j}__ != null}">
-                <div th:replace="fragments/item::fragment(*{item__${j}__})"></div>
+                <div th:replace="fragments/item::fragment(*{item__${j}__}, __${#bools.isTrue(drawing.inProgress)}__)"></div>
               </div>
 
               <!--/* If the drawing is running/ended, and no item is in this position, show the filler image */-->

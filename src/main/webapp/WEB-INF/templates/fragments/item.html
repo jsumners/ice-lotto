@@ -5,8 +5,7 @@
   <title></title>
 </head>
 <body>
-  <!--/* TODO: apply "tier-won-item" class and details if the item has been awarded */-->
-  <div th:fragment="fragment (prizeItem)" th:remove="tag">
+  <div th:fragment="fragment (prizeItem, isRunning)" th:remove="tag">
     <div th:if="${prizeItem}" class="text-center prize-item">
       <i data:id="${prizeItem.gameItem.id}"
          data:name="${prizeItem.gameItem.name}"
@@ -31,6 +30,12 @@
     <div th:if="${prizeItem == null}" class="text-center">
       <img class="gw-item-icon" th:src="@{/local/images/missing-item-icon.jpg}" src="missing-item-icon.jpg" />
     </div>
+
+    <th:block th:if="${not isRunning}">
+      <div sec:authorize="hasRole('ROLE_ADMIN')" class="text-center remove-item-btn-container">
+        <a class="btn btn-xs btn-default remove-item-btn">Remove</a>
+      </div>
+    </th:block>
   </div>
 </body>
 </html>

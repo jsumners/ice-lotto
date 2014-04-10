@@ -36,6 +36,7 @@ public class ItemController {
       PrizeTier prizeTier = prizeTierOptional.get();
       PrizeItem prizeItem = prizeTier.getItemAtPosition(tierPosition);
       model.addAttribute("prizeItem", prizeItem);
+      model.addAttribute("isRunning", false);
     }
 
     return "fragments/item :: fragment";

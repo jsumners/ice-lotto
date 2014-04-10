@@ -66,6 +66,12 @@
         </div>
       </template>
 
+      <template id="addItemBtnTemplate" sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="text-center">
+          <button class="btn btn-default btn-sm add-item-btn">Add</button>
+        </div>
+      </template>
+
       <script>
         (function() {
           var rootPath = $("meta[name=app-path]").attr("content");
@@ -94,6 +100,7 @@
 
     <th:block sec:authorize="hasRole('ROLE_ADMIN')">
       <script th:src="@{/local/js/admin/drawingRunner.js}" src="drawingRunner.js"></script>
+      <script th:src="@{/local/js/admin/removeItem.js}" src="removeItem.js"></script>
       <div th:replace="fragments/admin/addItemModal :: content" th:remove="tag"></div>
       <div th:replace="fragments/admin/depositModal :: content(${drawing})"></div>
     </th:block>

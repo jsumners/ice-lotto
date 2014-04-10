@@ -138,6 +138,9 @@
         .parent()
         .html($fillerTemplate.clone());
 
+    $(".remove-item-btn-container")
+        .animate({opacity: 0, height: 0}, "slow", function() { $(this).remove(); });
+
     // This should be fired once everyone has received the "drawing started"
     // message. So this is when the drawing runner should be allowed to start
     // pressing buttons again.

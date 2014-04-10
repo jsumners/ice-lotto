@@ -169,6 +169,26 @@ public class DrawingController {
     return response;
   }
 
+  @MessageMapping("/admin/drawing/item/del")
+  @SendTo("/topic/admin/drawing/item/del")
+  public ItemDelResponse delItem(ItemDelMessage message) {
+    ItemDelResponse response = new ItemDelResponse();
+
+    Optional<PrizeTier> tierOptional =
+      this.prizeTierService.findById(message.getTierId());
+
+    if (tierOptional.isPresent()) {
+      PrizeTier tier = tierOptional.get();
+      tier.setItemAtPosition(message.getTierPosition(), null);
+      this.prizeTierService.save(tier);
+    } else {
+      response.setSuccessful(false);
+      response.setMessage("Could not find prize tier with id: " + message.getTierId());
+    }
+
+    return response;
+  }
+
   @MessageMapping("/admin/drawing/create")
   @SendTo("/topic/admin/drawing/created")
   public String createDrawing(DrawingCreateMessage drawingCreateMessage) {
