@@ -19,8 +19,7 @@ public interface DrawingRepository extends JpaRepository<Drawing, Long> {
     "from Drawing d " +
     "where d.ended = (" +
       "select max(z.ended) " +
-      "from Drawing z " +
-      "where z.id = d.id" +
+      "from Drawing z" +
     ")"
   )
   Drawing previousDrawing();
