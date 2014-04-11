@@ -5,10 +5,10 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.sqlite.UserRepository;
 import com.jrfom.icelotto.exception.UserNotFoundException;
-import com.jrfom.icelotto.model.*;
 import com.jrfom.icelotto.model.Character;
-import com.jrfom.icelotto.repository.UserRepository;
+import com.jrfom.icelotto.model.User;
 import com.jrfom.icelotto.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class UserRepositoryService implements UserService {
   @Transactional(rollbackFor = UserNotFoundException.class)
   public void delete(Long userId) throws UserNotFoundException {
     log.debug("Deleting user with id: `{}`", userId);
-    User deleted = this.userRepository.findOne(userId);
+    User deleted = this.userRepository.findById(userId);
 
     if (deleted == null) {
       log.debug("Could not find user with id: `{}", userId);
@@ -67,7 +67,7 @@ public class UserRepositoryService implements UserService {
   public Optional<User> findById(Long id) {
     log.debug("Finding user with id: `{}`", id);
     Optional<User> result = Optional.absent();
-    User user = this.userRepository.findOne(id);
+    User user = this.userRepository.findById(id);
 
     if (user != null) {
       result = Optional.of(user);
