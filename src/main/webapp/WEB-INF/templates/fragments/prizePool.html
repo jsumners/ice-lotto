@@ -97,6 +97,9 @@
                          th:href="'http://www.gw2spidy.com/item/' + ${pool.tier__${i}__.item__*{result.itemDrawNumber}__.gameItem.id}"
                          th:text="${pool.tier__${i}__.item__*{result.itemDrawNumber}__.gameItem.name}"
                       >http://example.com/</a>
+                <span th:if="${pool.tier__${i}__.item__*{result.itemDrawNumber}__.count > 1}">
+                  &times; <span th:remove="tag" th:text="${pool.tier__${i}__.item__*{result.itemDrawNumber}__.count}">1</span>
+                </span>
               </small>
             </td>
           </tr>

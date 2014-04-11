@@ -121,6 +121,8 @@
     $(".item-won-link", $row)
         .text($itemInfo.data("name"))
         .attr("href", "http://www.gw2spidy.com/item/" + $itemInfo.data("id"));
+    $(".item-won-count", $row)
+        .text($itemInfo.data("count"));
     $small.css({display: "block", height: 0});
 
     $row.insertAfter($prevRow).css({visibility: "visible"});
