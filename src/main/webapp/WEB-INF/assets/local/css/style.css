@@ -87,6 +87,10 @@ body {
   width: 114px;
 }
 
+.prize-pool-tier-row .admin-col {
+  vertical-align: middle;
+}
+
 .search-result {
   cursor: pointer;
   padding: 8px;
