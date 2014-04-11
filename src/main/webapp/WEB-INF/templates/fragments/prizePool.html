@@ -89,13 +89,13 @@
             <td data:item-position="${pool.tier__${i}__.prizeDrawResult.itemDrawNumber}"
                 th:colspan="${#authorization.expression('hasRole(''ROLE_ADMIN'')') ? 11 : 10}"
                 style="padding-bottom: 0; padding-top: 0;">
-              <small>
-                Winner: <strong class="winner-name" th:text="${pool.tier__${i}__.prizeDrawResult.user.displayName}">Foo Bar</strong>
+              <small th:with="result = ${pool.tier__${i}__.prizeDrawResult}">
+                Winner: <strong class="winner-name" th:text="*{result.user.displayName}">Foo Bar</strong>
                 &nbsp;&Lt;&Gt;&nbsp;
                 Item: <a class="item-won-link"
                          target="_blank"
-                         th:href="'http://www.gw2spidy.com/item/' + ${pool.tier__${i}__.item__${i}__.gameItem.id}"
-                         th:text="${pool.tier__${i}__.item__${i}__.gameItem.name}"
+                         th:href="'http://www.gw2spidy.com/item/' + ${pool.tier__${i}__.item__*{result.itemDrawNumber}__.gameItem.id}"
+                         th:text="${pool.tier__${i}__.item__*{result.itemDrawNumber}__.gameItem.name}"
                       >http://example.com/</a>
               </small>
             </td>
