@@ -264,7 +264,7 @@ public class User {
       }
     }
 
-    return total < 21;
+    return total < 11;
   }
 
   /**
