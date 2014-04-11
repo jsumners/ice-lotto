@@ -264,7 +264,7 @@ public class User {
       }
     }
 
-    return total < 11;
+    return total < 21;
   }
 
   /**
@@ -293,7 +293,8 @@ public class User {
   @Transient
   public String localizeDatetime(Instant dateTime) {
     ZoneId zoneId = (this.timeZone != null) ? ZoneId.of(this.timeZone) : ZoneId.of("UTC");
-    String format = (this.datetimeFormat != null) ? this.datetimeFormat : "yyyy-MM-dd HH:mm Z";
+    String format = (this.datetimeFormat != null && this.datetimeFormat.length() > 0) ?
+      this.datetimeFormat : "yyyy-MM-dd HH:mm Z";
 
     try {
       DateTimeFormatter.ofPattern(format);
