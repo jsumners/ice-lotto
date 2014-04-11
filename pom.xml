@@ -328,6 +328,50 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>production</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <executions>
+              <execution>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <delete file="${project.build.outputDirectory}/application-dev.properties" />
+                    <delete file="${project.build.outputDirectory}/application-test.properties" />
+                    <delete file="${project.build.outputDirectory}/application-env.properties.example" />
+                    <delete file="${project.build.outputDirectory}/.gitignore" />
+                    <delete file="${project.build.outputDirectory}/database.sql" />
+                    <delete>
+                      <fileset dir="${project.build.outputDirectory}" includes="*.sqlite3" />
+                      <fileset dir="${project.build.outputDirectory}" includes="*.db" />
+                      <fileset dir="${project.build.outputDirectory}" includes="logback*.xml" />
+                    </delete>
+
+                    <delete dir="${project.build.outputDirectory}/sql/" />
+
+                    <copy file="src/main/resources/logback-prod.xml"
+                          tofile="${project.build.outputDirectory}/logback.xml" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <repositories>
     <repository>
       <id>jsumners-github-releases</id>
