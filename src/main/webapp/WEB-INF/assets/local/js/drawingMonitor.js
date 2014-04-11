@@ -144,7 +144,7 @@
     // This should be fired once everyone has received the "drawing started"
     // message. So this is when the drawing runner should be allowed to start
     // pressing buttons again.
-    $(".draw-btn").removeClass("disabled");
+    $(".draw-btn:not(.drawn)").removeClass("disabled");
     $(".money-draw-btn").removeClass("disabled");
   };
 

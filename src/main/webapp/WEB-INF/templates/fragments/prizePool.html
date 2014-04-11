@@ -48,7 +48,7 @@
             <td sec:authorize="hasRole('ROLE_ADMIN')">
               <th:block th:if="${drawing.inProgress}">
                 <a th:if="${#lists.size(pool.tier__${i}__.entries) != 0 and pool.tier__${i}__.isDrawn() == false}" class="btn btn-primary draw-btn">Draw</a>
-                <a th:if="${#lists.size(pool.tier__${i}__.entries) != 0 and pool.tier__${i}__.isDrawn() == true}" class="btn btn-primary draw-btn disabled">Drawn</a>
+                <a th:if="${#lists.size(pool.tier__${i}__.entries) != 0 and pool.tier__${i}__.isDrawn() == true}" class="btn btn-primary draw-btn disabled drawn">Drawn</a>
               </th:block>
 
               <th:block th:if="${!drawing.inProgress}">
