@@ -78,9 +78,12 @@ body {
   /*margin-top: 10px;*/
 }
 
+.prize-pool-tier-row {
+  vertical-align: top;
+}
+
 .prize-pool-tier-row > td {
   height: 81px;
-  vertical-align: middle !important;
   width: 114px;
 }
 
