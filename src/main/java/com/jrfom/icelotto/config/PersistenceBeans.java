@@ -1,5 +1,6 @@
 package com.jrfom.icelotto.config;
 
+import com.jrfom.icelotto.dao.sqlite.GameItemRepository;
 import com.jrfom.icelotto.service.*;
 import com.jrfom.icelotto.service.impl.*;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,11 @@ public class PersistenceBeans {
   @Bean
   public DrawingService drawingService() {
     return new DrawingRepositoryService();
+  }
+
+  @Bean
+  public GameItemRepository gameItemRepository() {
+    return new GameItemRepository();
   }
 
   @Bean

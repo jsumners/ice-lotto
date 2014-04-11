@@ -3,10 +3,12 @@ package com.jrfom.icelotto.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManagerFactory;
+
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.sqlite.GameItemRepository;
 import com.jrfom.icelotto.exception.GameItemNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
-import com.jrfom.icelotto.repository.GameItemRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -96,21 +99,21 @@ public class GameItemRepositoryServiceTest {
   public void delete() throws GameItemNotFoundException {
     log.info("Running GameItemRepositoryService.delete() success test");
     GameItem deleted = new GameItem(this.ITEM_ID, this.ITEM_NAME, this.ITEM_DESCRIPTION);
-    when(this.prizeItemRepository.findOne(this.ITEM_ID)).thenReturn(deleted);
+    when(this.prizeItemRepository.findById(this.ITEM_ID)).thenReturn(deleted);
 
     this.prizeItemRepositoryService.delete(this.ITEM_ID);
-    verify(this.prizeItemRepository).findOne(this.ITEM_ID);
+    verify(this.prizeItemRepository).findById(this.ITEM_ID);
     verify(this.prizeItemRepository).delete(this.ITEM_ID);
     verifyNoMoreInteractions(this.prizeItemRepository);
   }
 
   @Test(expected = GameItemNotFoundException.class)
   public void deleteGameItemNotFound() throws GameItemNotFoundException {
-    when(this.prizeItemRepository.findOne(this.ITEM_ID)).thenReturn(null);
+    when(this.prizeItemRepository.findById(this.ITEM_ID)).thenReturn(null);
 
     this.prizeItemRepositoryService.delete(this.ITEM_ID);
 
-    verify(this.prizeItemRepository).findOne(this.ITEM_ID);
+    verify(this.prizeItemRepository).findById(this.ITEM_ID);
     verifyNoMoreInteractions(this.prizeItemRepository);
   }
 
@@ -130,11 +133,11 @@ public class GameItemRepositoryServiceTest {
   @Test
   public void findById() {
     GameItem prizeItem = new GameItem(this.ITEM_ID, this.ITEM_NAME, this.ITEM_DESCRIPTION);
-    when(this.prizeItemRepository.findOne(this.ITEM_ID)).thenReturn(prizeItem);
+    when(this.prizeItemRepository.findById(this.ITEM_ID)).thenReturn(prizeItem);
 
     Optional<GameItem> result = this.prizeItemRepositoryService.findById(this.ITEM_ID);
 
-    verify(this.prizeItemRepository).findOne(this.ITEM_ID);
+    verify(this.prizeItemRepository).findById(this.ITEM_ID);
     verifyNoMoreInteractions(this.prizeItemRepository);
 
     assertTrue(result.isPresent());
@@ -146,6 +149,16 @@ public class GameItemRepositoryServiceTest {
 
 @Configuration
 class ContextConfig {
+  @Bean
+  public JdbcTemplate jdbcTemplate() {
+    return mock(JdbcTemplate.class);
+  }
+
+  @Bean
+  public EntityManagerFactory entityManagerFactory() {
+    return mock(EntityManagerFactory.class);
+  }
+
   @Bean
   public GameItemRepository prizeItemRepository() {
     GameItemRepository repository = mock(GameItemRepository.class);

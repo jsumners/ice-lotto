@@ -7,11 +7,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.sqlite.GameItemRepository;
 import com.jrfom.icelotto.exception.PrizeTierNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
 import com.jrfom.icelotto.model.PrizeItem;
 import com.jrfom.icelotto.model.PrizeTier;
-import com.jrfom.icelotto.repository.GameItemRepository;
 import com.jrfom.icelotto.repository.PrizeItemRepository;
 import com.jrfom.icelotto.repository.PrizeTierRepository;
 import com.jrfom.icelotto.service.PrizeTierService;

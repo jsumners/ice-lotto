@@ -7,9 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.sqlite.GameItemRepository;
 import com.jrfom.icelotto.exception.GameItemNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
-import com.jrfom.icelotto.repository.GameItemRepository;
 import com.jrfom.icelotto.service.GameItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class GameItemRepositoryService implements GameItemService {
   @Transactional(rollbackFor = GameItemNotFoundException.class)
   public void delete(Long GameItemId) throws GameItemNotFoundException {
     log.debug("Deleting game item with id: `{}`", GameItemId);
-    GameItem deleted = this.gameItemRepository.findOne(GameItemId);
+    GameItem deleted = this.gameItemRepository.findById(GameItemId);
 
     if (deleted == null) {
       log.debug("Could not find game item with id: `{}`", GameItemId);
@@ -96,7 +96,7 @@ public class GameItemRepositoryService implements GameItemService {
   public Optional<GameItem> findById(Long id) {
     log.debug("Finding game item with id: `{}`", id);
     Optional<GameItem> result = Optional.absent();
-    GameItem item = this.gameItemRepository.findOne(id);
+    GameItem item = this.gameItemRepository.findById(id);
 
     if (item != null) {
       result = Optional.of(item);
