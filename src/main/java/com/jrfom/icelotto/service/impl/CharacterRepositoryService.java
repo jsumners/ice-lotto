@@ -5,9 +5,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.sqlite.CharacterRepository;
 import com.jrfom.icelotto.exception.CharacterNotFoundException;
 import com.jrfom.icelotto.model.Character;
-import com.jrfom.icelotto.repository.CharacterRepository;
 import com.jrfom.icelotto.service.CharacterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class CharacterRepositoryService implements CharacterService {
   @Transactional(rollbackFor = CharacterNotFoundException.class)
   public void delete(Long characterId) throws CharacterNotFoundException {
     log.debug("Deleting character with id: `{}`", characterId);
-    Character deleted = this.characterRepository.findOne(characterId);
+    Character deleted = this.characterRepository.findById(characterId);
 
     if (deleted == null) {
       log.debug("Could not find character with id: `{}`", characterId);
@@ -66,7 +66,7 @@ public class CharacterRepositoryService implements CharacterService {
   public Optional<Character> findById(Long id) {
     log.debug("Finding character with id: `{}`", id);
     Optional<Character> result = Optional.absent();
-    Character character = this.characterRepository.findOne(id);
+    Character character = this.characterRepository.findById(id);
 
     if (character != null) {
       result = Optional.of(character);
