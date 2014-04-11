@@ -5,9 +5,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.sqlite.RoleRepository;
 import com.jrfom.icelotto.exception.RoleNotFoundException;
 import com.jrfom.icelotto.model.Role;
-import com.jrfom.icelotto.repository.RoleRepository;
 import com.jrfom.icelotto.service.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class RoleRepositoryService implements RoleService {
   @Transactional(rollbackFor = RoleNotFoundException.class)
   public void delete(Long roleId) throws RoleNotFoundException {
     log.debug("Deleting role with id: `{}`", roleId);
-    Role deleted = this.roleRepository.findOne(roleId);
+    Role deleted = this.roleRepository.findById(roleId);
 
     if (deleted == null) {
       log.debug("Could not find role with id: `{}`", roleId);
@@ -66,7 +66,7 @@ public class RoleRepositoryService implements RoleService {
   public Optional<Role> findById(Long id) {
     log.debug("Finding role with id: `{}`", id);
     Optional<Role> result = Optional.absent();
-    Role role = this.roleRepository.findOne(id);
+    Role role = this.roleRepository.findById(id);
 
     if (role != null) {
       result = Optional.of(role);
