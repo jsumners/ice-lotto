@@ -1,9 +1,6 @@
 package com.jrfom.icelotto.config;
 
-import com.jrfom.icelotto.dao.sqlite.CharacterRepository;
-import com.jrfom.icelotto.dao.sqlite.GameItemRepository;
-import com.jrfom.icelotto.dao.sqlite.RoleRepository;
-import com.jrfom.icelotto.dao.sqlite.UserRepository;
+import com.jrfom.icelotto.dao.sqlite.*;
 import com.jrfom.icelotto.service.*;
 import com.jrfom.icelotto.service.impl.*;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +26,11 @@ public class PersistenceBeans {
   @Bean
   public GameItemService gameItemService() {
     return new GameItemRepositoryService();
+  }
+
+  @Bean
+  public PrizeItemRepository prizeItemRepository() {
+    return new PrizeItemRepository();
   }
 
   @Bean

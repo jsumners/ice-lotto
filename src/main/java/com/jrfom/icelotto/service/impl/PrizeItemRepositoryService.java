@@ -7,10 +7,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.sqlite.PrizeItemRepository;
 import com.jrfom.icelotto.exception.PrizeItemNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
 import com.jrfom.icelotto.model.PrizeItem;
-import com.jrfom.icelotto.repository.PrizeItemRepository;
 import com.jrfom.icelotto.service.PrizeItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class PrizeItemRepositoryService implements PrizeItemService {
   @Transactional(rollbackFor = PrizeItemNotFoundException.class)
   public void delete(Long prizeItemId) throws PrizeItemNotFoundException {
     log.debug("Deleting prize item with id: `{}`", prizeItemId);
-    PrizeItem deleted = this.prizeItemRepository.findOne(prizeItemId);
+    PrizeItem deleted = this.prizeItemRepository.findById(prizeItemId);
 
     if (deleted == null) {
       log.debug("Could not find prize item with id: `{}`", prizeItemId);
@@ -84,7 +84,7 @@ public class PrizeItemRepositoryService implements PrizeItemService {
   public Optional<PrizeItem> findById(Long id) {
     log.debug("Finding prize item with id: `{}`", id);
     Optional<PrizeItem> result = Optional.absent();
-    PrizeItem item = this.prizeItemRepository.findOne(id);
+    PrizeItem item = this.prizeItemRepository.findById(id);
 
     if (item != null) {
       result = Optional.of(item);

@@ -16,7 +16,7 @@ public class PrizeItem {
   @Column
   private Integer count;
 
-  protected PrizeItem() {}
+  public PrizeItem() {}
 
   public PrizeItem(GameItem gameItem) {
     this(gameItem, 1);
