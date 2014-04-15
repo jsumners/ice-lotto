@@ -24,9 +24,9 @@ public class GameItemRepository implements GameItemDao {
   public GameItem create(final GameItem gameItem) {
     log.debug("Creating new game item in sqlite database");
     SimpleJdbcInsert insert = new SimpleJdbcInsert(this.jdbcTemplate);
-    insert.usingGeneratedKeyColumns("id")
-      .withTableName("game_items")
+    insert.withTableName("game_items")
       .usingColumns(new String[]{
+        "id",
         "description",
         "image_url",
         "min_level",
@@ -35,6 +35,7 @@ public class GameItemRepository implements GameItemDao {
       });
 
     Number key = insert.executeAndReturnKey(new HashMap<String, Object>() {{
+      put("id", gameItem.getId());
       put("description", gameItem.getDescription());
       put("image_url", gameItem.getImageUrl());
       put("min_level", gameItem.getMinLevel());
