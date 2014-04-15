@@ -57,6 +57,10 @@ public class MoneyDrawResult {
     this.awarded = Instant.now();
   }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
+
   public Long getId() {
     return this.id;
   }

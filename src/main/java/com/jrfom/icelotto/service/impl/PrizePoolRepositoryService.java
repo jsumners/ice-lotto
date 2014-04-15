@@ -7,9 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.PrizePoolDao;
 import com.jrfom.icelotto.exception.PrizePoolNotFoundException;
 import com.jrfom.icelotto.model.PrizePool;
-import com.jrfom.icelotto.repository.PrizePoolRepository;
 import com.jrfom.icelotto.service.PrizePoolService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class PrizePoolRepositoryService implements PrizePoolService {
   private static final Logger log = LoggerFactory.getLogger(PrizePoolRepositoryService.class);
 
   @Resource
-  private PrizePoolRepository prizePoolRepository;
+  private PrizePoolDao prizePoolDao;
 
   @PersistenceContext
   private EntityManager entityManager;
@@ -34,7 +34,7 @@ public class PrizePoolRepositoryService implements PrizePoolService {
     PrizePool record = new PrizePool();
 
     try {
-      record = this.prizePoolRepository.save(record);
+      record = this.prizePoolDao.save(record);
       result = Optional.of(record);
     } catch (DataAccessException e) {
       log.error("Something went wrong creating prize pool: `{}`", e.getMessage());
@@ -48,13 +48,13 @@ public class PrizePoolRepositoryService implements PrizePoolService {
   @Transactional(rollbackFor = PrizePoolNotFoundException.class)
   public void delete(Long prizePoolId) throws PrizePoolNotFoundException {
     log.debug("Deleting prize pool with id: `{}`", prizePoolId);
-    PrizePool deleted = this.prizePoolRepository.findOne(prizePoolId);
+    PrizePool deleted = this.prizePoolDao.findById(prizePoolId);
 
     if (deleted == null) {
       log.debug("Could not find prize pool with id: `{}`", prizePoolId);
       throw new PrizePoolNotFoundException();
     } else {
-      this.prizePoolRepository.delete(prizePoolId);
+      this.prizePoolDao.delete(prizePoolId);
     }
   }
 
@@ -62,7 +62,7 @@ public class PrizePoolRepositoryService implements PrizePoolService {
   @Transactional(readOnly = true)
   public List<PrizePool> findAll() {
     log.debug("Finding all prize pools");
-    return this.prizePoolRepository.findAll();
+    return this.prizePoolDao.findAll();
   }
 
   @Override
@@ -70,7 +70,7 @@ public class PrizePoolRepositoryService implements PrizePoolService {
   public Optional<PrizePool> findById(Long id) {
     log.debug("Finding prize pool with id: `{}`", id);
     Optional<PrizePool> result = Optional.absent();
-    PrizePool pool = this.prizePoolRepository.findOne(id);
+    PrizePool pool = this.prizePoolDao.findById(id);
 
     if (pool != null) {
       result = Optional.of(pool);

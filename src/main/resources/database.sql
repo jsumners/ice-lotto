@@ -105,7 +105,7 @@ create table prize_pools (
   tier9 integer,
   tier10 integer,
   drawn integer not null default(0),
-  draw_result integer,
+  draw_result integer, -- The id of a money_draw_results record
   foreign key (tier1) references prize_tiers (id),
   foreign key (tier2) references prize_tiers (id),
   foreign key (tier3) references prize_tiers (id),
@@ -115,11 +115,12 @@ create table prize_pools (
   foreign key (tier7) references prize_tiers (id),
   foreign key (tier8) references prize_tiers (id),
   foreign key (tier9) references prize_tiers (id),
-  foreign key (tier10) references prize_tiers (id)
+  foreign key (tier10) references prize_tiers (id),
+  foreign key (draw_result) references money_draw_results (id)
 );
 
--- The times are Unix timestamps (i.e. seconds since 00:00 1970/01/01)
 create table drawings (
+  -- The times are Unix timestamps (i.e. seconds since 00:00 1970/01/01)
   id integer primary key,
   small_pool integer,
   large_pool integer,
@@ -132,16 +133,16 @@ create table drawings (
   foreign key (large_pool) references prize_pools (id)
 );
 
--- Records an entry into a drawing in terms of the amount
--- of gold that was used to enter into the drawing.
 create table entries (
+  -- Records an entry into a drawing in terms of the amount
+  -- of gold that was used to enter into the drawing.
   id integer primary key,
   amount integer not null,
   entered_date integer
 );
 
--- Ties an entry to its parent drawing.
 create table drawing_entries (
+  -- Ties an entry to its parent drawing.
   drawing_id integer,
   entry_id integer,
   constraint drawing_entries_pk primary key (drawing_id, entry_id),
@@ -149,8 +150,8 @@ create table drawing_entries (
   foreign key (entry_id) references entries (id)
 );
 
--- Ties an entry to the prize tier it is for.
 create table tier_entries (
+  -- Ties an entry to the prize tier it is for.
   tier_id integer,
   entry_id integer,
   constraint tier_entries_pk primary key (tier_id, entry_id),
@@ -158,8 +159,8 @@ create table tier_entries (
   foreign key (entry_id) references entries (id)
 );
 
--- Ties an entry to the user it is for.
 create table user_entries (
+  -- Ties an entry to the user it is for.
   user_id integer,
   entry_id integer,
   constraint user_entries_pk primary key (user_id, entry_id),
@@ -167,8 +168,8 @@ create table user_entries (
   foreign key (entry_id) references entries (id)
 );
 
--- Records the order in which tier entries were shuffled.
 create table shuffled_tier_entries (
+  -- Records the order in which tier entries were shuffled.
   id integer primary key,
   position integer not null,
   entry_id integer not null,
@@ -177,8 +178,8 @@ create table shuffled_tier_entries (
   foreign key (tier_id) references prize_tiers (id)
 );
 
--- Records the order in which pool (money) entries were shuffled.
 create table shuffled_pool_entries (
+  -- Records the order in which pool (money) entries were shuffled.
   id integer primary key,
   position integer not null,
   entry_id integer not null,
@@ -187,30 +188,72 @@ create table shuffled_pool_entries (
   foreign key (pool_id) references prize_pools (id)
 );
 
--- Records the drawing results from the shuffled_tier_entries.
 create table prize_draw_results (
+  -- Records the drawing results from the shuffled_tier_entries.
   id integer primary key,
   awarded integer not null, -- Time it was won (Unix timestamp)
   item_draw_number integer not null, -- The random number used to pick the won item
-  user_draw_number integer not null, -- The random number used to pick the winner
-  prize_item_id integer not null,
-  prize_tier_id integer not null,
-  user_id integer not null,
-  foreign key (prize_item_id) references prize_items (id),
-  foreign key (prize_tier_id) references prize_tiers (id),
-  foreign key (user_id) references users (id)
+  user_draw_number integer not null -- The random number used to pick the winner
 );
 
--- Records the drawing results from the shuffled_pool_entries.
+create table drawn_prize_items (
+  -- Ties a prize_draw_results record to a prize item.
+  prize_item_id integer,
+  prize_draw_result_id integer,
+  constraint drawn_prize_items_pk primary key (prize_item_id, prize_draw_result_id),
+  foreign key (prize_item_id) references prize_items (id),
+  foreign key (prize_draw_result_id) references prize_draw_results (id)
+);
+
+create table drawn_prize_tiers (
+  -- Ties a prize_draw_results record to a prize tier.
+  prize_tier_id integer,
+  prize_draw_result_id integer,
+  constraint drawn_prize_tiers_pk primary key (prize_tier_id, prize_draw_result_id),
+  foreign key (prize_tier_id) references prize_tiers (id),
+  foreign key (prize_draw_result_id) references prize_draw_results (id)
+);
+
+create table drawn_prize_winners (
+  -- Ties prize_draw_results records to users (winners)
+  winner_id integer,
+  prize_draw_result_id integer,
+  constraint drawn_prize_winners_pk primary key (winner_id, prize_draw_result_id),
+  foreign key (winner_id) references users (id),
+  foreign key (prize_draw_result_id) references prize_draw_results (id)
+);
+
 create table money_draw_results (
+  -- Records the drawing results from the shuffled_pool_entries.
   id integer primary key,
   awarded integer not null, -- Time it was won (Unix timestamp)
   amount_won integer not null,
-  draw_number integer not null, -- The random number used to pick the winner
-  drawing_id integer not null,
-  prize_pool_id integer not null,
-  user_id integer not null,
+  draw_number integer not null -- The random number used to pick the winner
+);
+
+create table money_draw_drawings (
+  -- Ties money_draw_results records to drawings.
+  drawing_id integer,
+  money_draw_result_id integer,
+  constraint money_draw_drawings_pk primary key (drawing_id, money_draw_result_id),
   foreign key (drawing_id) references drawings (id),
-  foreign key (prize_pool_id) references prize_pools (id),
-  foreign key (user_id) references users (id)
+  foreign key (money_draw_result_id) references money_draw_results (id)
+);
+
+create table money_draw_pools (
+  -- Ties money_draw_results records to prize_pools records.
+  pool_id integer,
+  money_draw_result_id integer,
+  constraint money_draw_pools_pk primary key (pool_id, money_draw_result_id),
+  foreign key (pool_id) references prize_pools (id),
+  foreign key (money_draw_result_id) references money_draw_results (id)
+);
+
+create table money_draw_winners (
+  -- Ties money_draw_results records to users (winners).
+  winner_id integer,
+  money_draw_result_id integer,
+  constraint money_draw_winners_pk primary key (winner_id, money_draw_result_id),
+  foreign key (winner_id) references users (id),
+  foreign key (money_draw_result_id) references money_draw_results (id)
 );

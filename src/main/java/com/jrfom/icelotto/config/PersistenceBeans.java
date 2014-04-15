@@ -80,8 +80,18 @@ public class PersistenceBeans {
   }
 
   @Bean
+  public MoneyDrawResultDao moneyDrawResultDao() {
+    return new MoneyDrawResultRepository();
+  }
+
+  @Bean
   public PrizeItemDao prizeItemDao() {
     return new PrizeItemRepository();
+  }
+
+  @Bean
+  public PrizePoolDao prizePoolDao() {
+    return new PrizePoolRepository();
   }
 
   @Bean
