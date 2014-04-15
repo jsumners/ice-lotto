@@ -1,7 +1,12 @@
 package com.jrfom.icelotto.util;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,5 +33,20 @@ public class Stringer {
     }
 
     return json;
+  }
+
+  public static String readClasspathFileToString(String fileName) {
+    log.debug("Reading `{}` to string", fileName);
+    URL fileUrl = Resources.getResource(fileName);
+    String contents = null;
+
+    try {
+      contents = Resources.toString(fileUrl, Charset.forName("UTF-8"));
+    } catch (IOException e) {
+      log.error("Could not read resource: `{}`", e.getMessage());
+      log.debug(e.toString());
+    }
+
+    return contents;
   }
 }

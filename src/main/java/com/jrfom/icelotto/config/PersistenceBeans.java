@@ -1,5 +1,6 @@
 package com.jrfom.icelotto.config;
 
+import com.jrfom.icelotto.dao.*;
 import com.jrfom.icelotto.dao.sqlite.*;
 import com.jrfom.icelotto.service.*;
 import com.jrfom.icelotto.service.impl.*;
@@ -61,5 +62,40 @@ public class PersistenceBeans {
   @Bean
   public UserService userService() {
     return new UserRepositoryService();
+  }
+
+  @Bean
+  public CharacterDao characterDao() {
+    return new CharacterRepository();
+  }
+
+  @Bean
+  public EntriesDao entriesDao() {
+    return new EntriesRepository();
+  }
+
+  @Bean
+  public GameItemDao gameItemDao() {
+    return new GameItemRepository();
+  }
+
+  @Bean
+  public PrizeItemDao prizeItemDao() {
+    return new PrizeItemRepository();
+  }
+
+  @Bean
+  public PrizeTierDao prizeTierDao() {
+    return new PrizeTierRepository();
+  }
+
+  @Bean
+  public RoleDao roleDao() {
+    return new RoleRepository();
+  }
+
+  @Bean
+  public UserDao userDao() {
+    return new UserRepository();
   }
 }

@@ -31,13 +31,21 @@ public class Entry {
   @JoinColumn(referencedColumnName = "id")
   private PrizeTier prizeTier;
 
-  protected Entry() {}
+  public Entry() {}
 
   public Entry(User user, PrizeTier prizeTier, Integer amount) {
     this.user = user;
     this.amount = amount;
     this.enteredDate = Instant.now();
     this.prizeTier = prizeTier;
+  }
+
+  public Long getId() {
+    return this.id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public User getUser() {
@@ -76,7 +84,7 @@ public class Entry {
     return this.prizeTier;
   }
 
-  public void setPrizeTier(PrizeTier prizePool) {
-    this.prizeTier = prizePool;
+  public void setPrizeTier(PrizeTier prizeTier) {
+    this.prizeTier = prizeTier;
   }
 }

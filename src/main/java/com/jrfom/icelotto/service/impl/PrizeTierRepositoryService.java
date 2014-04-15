@@ -7,13 +7,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
-import com.jrfom.icelotto.dao.sqlite.GameItemRepository;
-import com.jrfom.icelotto.dao.sqlite.PrizeItemRepository;
+import com.jrfom.icelotto.dao.GameItemDao;
+import com.jrfom.icelotto.dao.PrizeItemDao;
+import com.jrfom.icelotto.dao.PrizeTierDao;
 import com.jrfom.icelotto.exception.PrizeTierNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
 import com.jrfom.icelotto.model.PrizeItem;
 import com.jrfom.icelotto.model.PrizeTier;
-import com.jrfom.icelotto.repository.PrizeTierRepository;
 import com.jrfom.icelotto.service.PrizeTierService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +26,13 @@ public class PrizeTierRepositoryService implements PrizeTierService {
   private static final Logger log = LoggerFactory.getLogger(PrizeTierRepositoryService.class);
 
   @Resource
-  private PrizeTierRepository prizeTierRepository;
+  private PrizeTierDao prizeTierDao;
 
   @Resource
-  private PrizeItemRepository prizeItemRepository;
+  private PrizeItemDao prizeItemDao;
 
   @Resource
-  private GameItemRepository gameItemRepository;
+  private GameItemDao gameItemDao;
 
   @PersistenceContext
   private EntityManager entityManager;
@@ -45,7 +45,7 @@ public class PrizeTierRepositoryService implements PrizeTierService {
     PrizeTier record = new PrizeTier();
 
     try {
-      record = this.prizeTierRepository.save(record);
+      record = this.prizeTierDao.save(record);
       result = Optional.of(record);
     } catch (DataAccessException e) {
       log.error("Something went wrong creating prize tier: `{}`", e.getMessage());
@@ -59,13 +59,13 @@ public class PrizeTierRepositoryService implements PrizeTierService {
   @Transactional(rollbackFor = PrizeTierNotFoundException.class)
   public void delete(Long prizeTierId) throws PrizeTierNotFoundException {
     log.debug("Deleting prize tier with id: `{}`", prizeTierId);
-    PrizeTier deleted = this.prizeTierRepository.findOne(prizeTierId);
+    PrizeTier deleted = this.prizeTierDao.findById(prizeTierId);
 
     if (deleted == null) {
       log.debug("Could not find prize tier with id: `{}`", prizeTierId);
       throw new PrizeTierNotFoundException();
     } else {
-      this.prizeTierRepository.delete(prizeTierId);
+      this.prizeTierDao.delete(prizeTierId);
     }
   }
 
@@ -73,7 +73,7 @@ public class PrizeTierRepositoryService implements PrizeTierService {
   @Transactional(readOnly = true)
   public List<PrizeTier> findAll() {
     log.debug("Finding all prize tiers");
-    return this.prizeTierRepository.findAll();
+    return this.prizeTierDao.findAll();
   }
 
   @Override
@@ -81,7 +81,7 @@ public class PrizeTierRepositoryService implements PrizeTierService {
   public Optional<PrizeTier> findById(Long id) {
     log.debug("Finding prize tier with id: `{}`", id);
     Optional<PrizeTier> result = Optional.absent();
-    PrizeTier tier = this.prizeTierRepository.findOne(id);
+    PrizeTier tier = this.prizeTierDao.findById(id);
 
     if (tier != null) {
       result = Optional.of(tier);
@@ -93,7 +93,7 @@ public class PrizeTierRepositoryService implements PrizeTierService {
   @Override
   @Transactional
   public void save(PrizeTier prizeTier) {
-    this.entityManager.merge(prizeTier);
+    this.prizeTierDao.save(prizeTier);
   }
 
   @Override
