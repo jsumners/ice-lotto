@@ -16,5 +16,7 @@ values(1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
 insert into drawings (scheduled, small_pool) values(1393113600, 1);
 
-insert into entries(id, amount, entered_date, user) values(1, 5, 1393027200, 1);
-insert into drawing_entries(drawing_id, entry_id) values(1, 1);
+insert into entries(id, amount, entered_date) values(1, 5, 1393027200);
+insert into drawing_entries (drawing_id, entry_id) values (1, 1);
+insert into tier_entries (tier_id, entry_id) values (1, 1);
+insert into user_entries (user_id, entry_id) values (1, 1);

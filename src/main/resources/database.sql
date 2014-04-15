@@ -1,119 +1,216 @@
+-- This table should only ever contain one row. It will be used
+-- to determine which scripts are necessary to perform a database upgrade.
+create table db_info (
+  version integer not null default(1),
+  initial_version integer not null default(1)
+);
+-- This will be the only data insertion in this script. This statement
+-- can be used to determine which version of the database this script will
+-- create.
+insert into db_info (version, initial_version) values (1, 1);
 
--- Table: prize_items
-create table prize_items ( 
-  id          integer primary key
-                      unique,
-  name        varchar,
-  description varchar 
+create table users (
+  id integer primary key,
+  gw2display_name text not null,
+  display_name text,
+  email text,
+  password text,
+  time_zone text,
+  datetime_format text,
+  claim_key text,
+  claimed integer not null default(0),
+  enabled integer not null default(0)
 );
 
-
--- Table: prize_tiers
-create table prize_tiers ( 
-  id      integer primary key autoincrement
-                  not null
-                  default ( 0 ),
-  item_1  integer references prize_items ( id ),
-  item_2  integer references prize_items ( id ),
-  item_3  integer references prize_items ( id ),
-  item_4  integer references prize_items ( id ),
-  item_5  integer references prize_items ( id ),
-  item_6  integer references prize_items ( id ),
-  item_7  integer references prize_items ( id ),
-  item_8  integer references prize_items ( id ),
-  item_9  integer references prize_items ( id ),
-  item_10 integer references prize_items ( id ) 
+create table roles (
+  id integer primary key,
+  name text unique,
+  description text
 );
 
-
--- Table: prize_pools
-create table prize_pools ( 
-  id      integer primary key autoincrement
-                  not null
-                  unique
-                  default ( 0 ),
-  tier_1  integer references prize_tiers ( id ),
-  tier_2  integer references prize_tiers ( id ),
-  tier_3  integer references prize_tiers ( id ),
-  tier_4  integer references prize_tiers ( id ),
-  tier_5  integer references prize_tiers ( id ),
-  tier_6  integer references prize_tiers ( id ),
-  tier_7  integer references prize_tiers ( id ),
-  tier_8  integer references prize_tiers ( id ),
-  tier_9  integer references prize_tiers ( id ),
-  tier_10 integer references prize_tiers ( id ) 
+create table user_roles (
+  user_id integer,
+  role_id integer,
+  constraint user_roles_pk primary key (user_id, role_id),
+  foreign key (user_id) references users (id),
+  foreign key (role_id) references roles (id)
 );
 
-
--- Table: users
-create table users ( 
-  id               integer primary key autoincrement
-                           not null
-                           unique
-                           default ( 0 ),
-  email            varchar,
-  display_name     varchar,
-  gw2_display_name varchar,
-  password         varchar,
-  salt             varchar 
+create table characters (
+  id integer primary key,
+  name text not null
 );
 
-
--- Table: characters
-create table characters ( 
-  user_id integer not null
-                  references users ( id ),
-  name    varchar,
-  primary key ( user_id, name ) 
+create table user_characters (
+  user_id integer not null,
+  character_id integer not null,
+  constraint user_characters_pk primary key (user_id, character_id),
+  foreign key (user_id) references users (id),
+  foreign key (character_id) references characters (id)
 );
 
-
--- Table: drawings
-create table drawings ( 
-  id         integer  primary key autoincrement
-                      not null,
-  scheduled  datetime,
-  held       datetime,
-  prize_pool integer  references prize_pools ( id ),
-  name       varchar 
+create table game_items (
+  id integer, -- The actual Guild Wars 2 item id, not an autoincrement id
+  description text,
+  image_url text,
+  min_level integer,
+  name text not null,
+  rarity integer,
+  constraint game_items_pk primary key (id, name)
 );
 
-
--- Table: drawing_results
-create table drawing_results ( 
-  id          integer primary key autoincrement
-                      not null
-                      unique
-                      default ( 0 ),
-  drawing_id  integer not null
-                      references drawings ( id ),
-  winner_id   integer,
-  prize_pool  integer not null
-                      references prize_pools ( id ),
-  prize_tier  integer not null
-                      references prize_pools ( id ),
-  item_number integer 
+create table prize_items (
+  id integer primary key,
+  count integer not null default(1),
+  game_item integer not null,
+  foreign key (game_item) references game_items (id)
 );
 
-
--- Table: roles
-create table roles ( 
-  id          integer primary key autoincrement
-                      not null
-                      unique
-                      default ( 0 ),
-  name        varchar not null
-                      unique,
-  description varchar not null 
+create table prize_tiers (
+  id integer primary key,
+  item1 integer,
+  item2 integer,
+  item3 integer,
+  item4 integer,
+  item5 integer,
+  item6 integer,
+  item7 integer,
+  item8 integer,
+  item9 integer,
+  item10 integer,
+  drawn integer not null default(0),
+  draw_result integer,
+  foreign key (item1) references prize_items (id),
+  foreign key (item2) references prize_items (id),
+  foreign key (item3) references prize_items (id),
+  foreign key (item4) references prize_items (id),
+  foreign key (item5) references prize_items (id),
+  foreign key (item6) references prize_items (id),
+  foreign key (item7) references prize_items (id),
+  foreign key (item8) references prize_items (id),
+  foreign key (item9) references prize_items (id),
+  foreign key (item10) references prize_items (id)
 );
 
-
--- Table: user_roles
-create table user_roles ( 
-  role_id integer not null
-                  references roles ( id ),
-  user_id integer not null
-                  references users ( id ),
-  primary key ( role_id, user_id ) 
+create table prize_pools (
+  id integer primary key,
+  tier1 integer,
+  tier2 integer,
+  tier3 integer,
+  tier4 integer,
+  tier5 integer,
+  tier6 integer,
+  tier7 integer,
+  tier8 integer,
+  tier9 integer,
+  tier10 integer,
+  drawn integer not null default(0),
+  draw_result integer,
+  foreign key (tier1) references prize_tiers (id),
+  foreign key (tier2) references prize_tiers (id),
+  foreign key (tier3) references prize_tiers (id),
+  foreign key (tier4) references prize_tiers (id),
+  foreign key (tier5) references prize_tiers (id),
+  foreign key (tier6) references prize_tiers (id),
+  foreign key (tier7) references prize_tiers (id),
+  foreign key (tier8) references prize_tiers (id),
+  foreign key (tier9) references prize_tiers (id),
+  foreign key (tier10) references prize_tiers (id)
 );
 
+-- The times are Unix timestamps (i.e. seconds since 00:00 1970/01/01)
+create table drawings (
+  id integer primary key,
+  small_pool integer,
+  large_pool integer,
+  scheduled integer, -- time the drawing is/was scheduled to start
+  started integer, -- time the drawing started
+  ended integer, -- time the drawing ended
+  in_progress integer not null default(0),
+  duplicated integer not null default(0),
+  foreign key (small_pool) references prize_pools (id),
+  foreign key (large_pool) references prize_pools (id)
+);
+
+-- Records an entry into a drawing in terms of the amount
+-- of gold that was used to enter into the drawing.
+create table entries (
+  id integer primary key,
+  amount integer not null,
+  entered_date integer
+);
+
+-- Ties an entry to its parent drawing.
+create table drawing_entries (
+  drawing_id integer,
+  entry_id integer,
+  constraint drawing_entries_pk primary key (drawing_id, entry_id),
+  foreign key (drawing_id) references drawings (id),
+  foreign key (entry_id) references entries (id)
+);
+
+-- Ties an entry to the prize tier it is for.
+create table tier_entries (
+  tier_id integer,
+  entry_id integer,
+  constraint tier_entries_pk primary key (tier_id, entry_id),
+  foreign key (tier_id) references prize_tiers (id),
+  foreign key (entry_id) references entries (id)
+);
+
+-- Ties an entry to the user it is for.
+create table user_entries (
+  user_id integer,
+  entry_id integer,
+  constraint user_entries_pk primary key (user_id, entry_id),
+  foreign key (user_id) references users (id),
+  foreign key (entry_id) references entries (id)
+);
+
+-- Records the order in which tier entries were shuffled.
+create table shuffled_tier_entries (
+  id integer primary key,
+  position integer not null,
+  entry_id integer not null,
+  tier_id integer not null,
+  foreign key (entry_id) references entries (id),
+  foreign key (tier_id) references prize_tiers (id)
+);
+
+-- Records the order in which pool (money) entries were shuffled.
+create table shuffled_pool_entries (
+  id integer primary key,
+  position integer not null,
+  entry_id integer not null,
+  pool_id integer not null,
+  foreign key (entry_id) references entries (id),
+  foreign key (pool_id) references prize_pools (id)
+);
+
+-- Records the drawing results from the shuffled_tier_entries.
+create table prize_draw_results (
+  id integer primary key,
+  awarded integer not null, -- Time it was won (Unix timestamp)
+  item_draw_number integer not null, -- The random number used to pick the won item
+  user_draw_number integer not null, -- The random number used to pick the winner
+  prize_item_id integer not null,
+  prize_tier_id integer not null,
+  user_id integer not null,
+  foreign key (prize_item_id) references prize_items (id),
+  foreign key (prize_tier_id) references prize_tiers (id),
+  foreign key (user_id) references users (id)
+);
+
+-- Records the drawing results from the shuffled_pool_entries.
+create table money_draw_results (
+  id integer primary key,
+  awarded integer not null, -- Time it was won (Unix timestamp)
+  amount_won integer not null,
+  draw_number integer not null, -- The random number used to pick the winner
+  drawing_id integer not null,
+  prize_pool_id integer not null,
+  user_id integer not null,
+  foreign key (drawing_id) references drawings (id),
+  foreign key (prize_pool_id) references prize_pools (id),
+  foreign key (user_id) references users (id)
+);
