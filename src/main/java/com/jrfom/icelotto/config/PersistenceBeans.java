@@ -85,6 +85,11 @@ public class PersistenceBeans {
   }
 
   @Bean
+  private PrizeDrawResultDao prizeDrawResultDao() {
+    new PrizeDrawResultRepository();
+  }
+
+  @Bean
   public PrizeItemDao prizeItemDao() {
     return new PrizeItemRepository();
   }
