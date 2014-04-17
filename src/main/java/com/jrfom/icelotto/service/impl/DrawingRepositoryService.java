@@ -3,15 +3,13 @@ package com.jrfom.icelotto.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.DrawingDao;
 import com.jrfom.icelotto.exception.DrawingNotFoundException;
 import com.jrfom.icelotto.model.Drawing;
 import com.jrfom.icelotto.model.PrizePool;
-import com.jrfom.icelotto.repository.DrawingRepository;
 import com.jrfom.icelotto.service.DrawingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +23,7 @@ public class DrawingRepositoryService implements DrawingService {
   private static final Logger log = LoggerFactory.getLogger(DrawingRepositoryService.class);
 
   @Resource
-  private DrawingRepository drawingRepository;
-
-  @PersistenceContext
-  private EntityManager entityManager;
+  private DrawingDao drawingDao;
 
   @Override
   @Transactional
@@ -44,7 +39,7 @@ public class DrawingRepositoryService implements DrawingService {
     Drawing record = new Drawing(scheduled, smallPool, largePool);
 
     try {
-      record = this.drawingRepository.save(record);
+      record = this.drawingDao.save(record);
       result = Optional.of(record);
     } catch (DataAccessException e) {
       log.error("Could not create new drawing: `{}`", e.getMessage());
@@ -58,13 +53,13 @@ public class DrawingRepositoryService implements DrawingService {
   @Transactional(rollbackFor = DrawingNotFoundException.class)
   public void delete(Long drawingId) throws DrawingNotFoundException {
     log.debug("Deleting drawing with id: `{}`", drawingId);
-    Drawing deleted = this.drawingRepository.findOne(drawingId);
+    Drawing deleted = this.drawingDao.findById(drawingId);
 
     if (deleted == null) {
       log.debug("Could not find drawing with id: `{}`", drawingId);
       throw new DrawingNotFoundException();
     } else {
-      this.drawingRepository.delete(drawingId);
+      this.drawingDao.delete(drawingId);
     }
   }
 
@@ -72,7 +67,7 @@ public class DrawingRepositoryService implements DrawingService {
   @Transactional(readOnly = true)
   public List<Drawing> findAll() {
     log.debug("Finding all drawings");
-    return this.drawingRepository.findAll();
+    return this.drawingDao.findAll();
   }
 
   @Override
@@ -80,7 +75,7 @@ public class DrawingRepositoryService implements DrawingService {
   public Optional<Drawing> findById(Long id) {
     log.debug("Finding drawing with id: `{}`", id);
     Optional<Drawing> result = Optional.absent();
-    Drawing drawing = this.drawingRepository.findOne(id);
+    Drawing drawing = this.drawingDao.findById(id);
 
     if (drawing != null) {
       result = Optional.of(drawing);
@@ -96,7 +91,7 @@ public class DrawingRepositoryService implements DrawingService {
   @Transactional(readOnly = true)
   public Optional<Drawing> nextDrawing() {
     Optional<Drawing> result = Optional.absent();
-    Drawing drawing = this.drawingRepository.nextDrawing();
+    Drawing drawing = this.drawingDao.nextDrawing();
 
     if (drawing != null) {
       result = Optional.of(drawing);
@@ -109,7 +104,7 @@ public class DrawingRepositoryService implements DrawingService {
   @Transactional(readOnly = true)
   public Optional<Drawing> previousDrawing() {
     Optional<Drawing> result = Optional.absent();
-    Drawing drawing = this.drawingRepository.previousDrawing();
+    Drawing drawing = this.drawingDao.previousDrawing();
 
     if (drawing != null) {
       result = Optional.of(drawing);
@@ -121,6 +116,6 @@ public class DrawingRepositoryService implements DrawingService {
   @Override
   @Transactional
   public Drawing save(Drawing drawing) {
-    return this.entityManager.merge(drawing);
+    return this.drawingDao.save(drawing);
   }
 }

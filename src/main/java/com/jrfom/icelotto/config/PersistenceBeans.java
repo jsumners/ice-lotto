@@ -45,6 +45,11 @@ public class PersistenceBeans {
   }
 
   @Bean
+  public DrawingDao drawingDao() {
+    return new DrawingRepository();
+  }
+
+  @Bean
   public EntriesDao entriesDao() {
     return new EntriesRepository();
   }

@@ -47,7 +47,7 @@ public class Drawing {
   @JoinColumn(name = "drawing")
   private Set<Entry> entries;
 
-  protected Drawing() {
+  public Drawing() {
     this.entries = new HashSet<>(0);
     this.inProgress = false;
     this.duplicated = false;
@@ -65,12 +65,7 @@ public class Drawing {
     return this.id;
   }
 
-  /**
-   * For unit testing.
-   *
-   * @param id A number as an identifier.
-   */
-  protected void setId(Long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
