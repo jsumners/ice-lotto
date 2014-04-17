@@ -1,11 +1,8 @@
 package com.jrfom.icelotto.config;
 
-import javax.persistence.EntityManagerFactory;
-
 import com.github.mxab.thymeleaf.extras.dataattribute.dialect.DataAttributeDialect;
 import com.jrfom.gw2.ApiClient;
 import com.jrfom.icelotto.util.ImageDownloader;
-import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +12,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect;
@@ -73,25 +68,6 @@ public class ApplicationContextBeans {
   @Bean
   public ApiClient apiClient() {
     return new ApiClient();
-  }
-
-  @Bean
-  public JpaTransactionManager transactionManager() throws ClassNotFoundException {
-    JpaTransactionManager manager = new JpaTransactionManager();
-    manager.setEntityManagerFactory(this.entityManagerFactory());
-    return manager;
-  }
-
-  @Bean
-  public EntityManagerFactory entityManagerFactory() throws ClassNotFoundException {
-    LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-    factoryBean.setDataSource(this.dataSourceConfig.dataSource());
-    factoryBean.setPackagesToScan(this.env.getRequiredProperty("packages.to.scan"));
-    factoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
-    factoryBean.setJpaProperties(this.dataSourceConfig.jpaProperties());
-    factoryBean.afterPropertiesSet();
-
-    return factoryBean.getObject();
   }
 
   @Bean

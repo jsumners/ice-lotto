@@ -3,8 +3,6 @@ package com.jrfom.icelotto.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
 import com.jrfom.icelotto.dao.GameItemDao;
@@ -22,9 +20,6 @@ public class GameItemRepositoryService implements GameItemService {
 
   @Resource
   private GameItemDao gameItemDao;
-
-  @PersistenceContext
-  private EntityManager entityManager;
 
   /**
    * {@inheritDoc}
@@ -108,6 +103,6 @@ public class GameItemRepositoryService implements GameItemService {
   @Override
   @Transactional
   public void save(GameItem gameItem) {
-    this.entityManager.merge(gameItem);
+    this.gameItemDao.save(gameItem);
   }
 }
