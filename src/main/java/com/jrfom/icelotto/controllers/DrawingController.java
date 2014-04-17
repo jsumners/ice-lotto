@@ -231,8 +231,6 @@ public class DrawingController {
         PrizeTier prizeTier = prizeTierOptional.get();
         Entry entry = new Entry(user, prizeTier, depositEntryMessage.getAmount());
         entry.setDrawing(drawing);
-        /*drawing.addEntry(entry);
-        drawing = this.drawingService.save(drawing);*/
         this.entriesDao.create(entry);
 
         response.setSmallPoolTotal(drawing.getSmallPoolTotal());
