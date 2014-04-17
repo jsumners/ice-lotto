@@ -152,11 +152,11 @@ public class DrawingRepository implements DrawingDao {
       Object largePoolId = rs.getObject("large_pool");
 
       result.setSmallPool(
-        (smallPoolId == null) ? null : prizePoolDao.findById((Long) smallPoolId)
+        (smallPoolId == null) ? null : prizePoolDao.findById(((Integer) smallPoolId).longValue())
       );
 
       result.setLargePool(
-        (largePoolId == null) ? null : prizePoolDao.findById((Long) largePoolId)
+        (largePoolId == null) ? null : prizePoolDao.findById(((Integer) largePoolId).longValue())
       );
 
       return result;

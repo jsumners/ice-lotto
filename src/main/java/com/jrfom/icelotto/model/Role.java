@@ -22,11 +22,15 @@ public class Role {
   @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
   private Set<User> users;
 
-  protected Role() {}
+  public Role() {}
 
   public Role(String name, String description) {
     this.name = name;
     this.description = description;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public Long getId() {

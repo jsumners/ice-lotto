@@ -10,6 +10,7 @@ import com.jrfom.icelotto.model.MoneyDrawResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -135,11 +136,20 @@ public class MoneyDrawResultRepository implements MoneyDrawResultDao {
   @Override
   public MoneyDrawResult findById(Long id) {
     log.debug("Finding money draw result by id: `{}`", id);
-    return this.jdbcTemplate.queryForObject(
-      "select * from money_draw_result a where a.id = ?",
-      new MoneyDrawResultRowMapper(),
-      id
-    );
+    MoneyDrawResult result = null;
+
+    try {
+      result = this.jdbcTemplate.queryForObject(
+        "select * from money_draw_results a where a.id = ?",
+        new MoneyDrawResultRowMapper(),
+        id
+      );
+    } catch (DataAccessException e) {
+      log.error("Could not find a money draw result with id: `{}`", id);
+      log.debug(e.toString());
+    }
+
+    return result;
   }
 
   @Override

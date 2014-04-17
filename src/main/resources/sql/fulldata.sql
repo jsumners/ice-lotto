@@ -100,7 +100,7 @@ insert into user_characters (user_id, character_id) values (9, 30);
 
 -- Third, we need some game items
 insert into game_items (id, name, description, min_level, rarity)
-values (2952, "Acolyte Coat", "A lovely coat", 1, "Common");
+values (2952, "Acolyte Coat", "A lovely coat", 1, 0);
 
 -- Fourth, we need some prize items
 insert into prize_items (id, game_item, count) values (1, 2952, 1);

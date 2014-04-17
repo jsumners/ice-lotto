@@ -2,7 +2,6 @@ package com.jrfom.icelotto.security;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.base.Optional;
 import com.jrfom.icelotto.model.Role;
@@ -10,7 +9,6 @@ import com.jrfom.icelotto.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +36,7 @@ public class SqliteUserDetailsService implements UserDetailsService {
     }
 
     com.jrfom.icelotto.model.User localUser = userOptional.get();
+    localUser.setRoles(this.userService.rolesForUser(localUser.getId()));
     springUser = new User(
       localUser.getGw2DisplayName(),
       localUser.getPassword(),
@@ -51,8 +50,8 @@ public class SqliteUserDetailsService implements UserDetailsService {
     return springUser;
   }
 
-  public static List<GrantedAuthority> getGrantedAuthorities(Set<Role> roles) {
-    List<GrantedAuthority> authorities = new ArrayList<>(0);
+  public static List<SimpleGrantedAuthority> getGrantedAuthorities(List<Role> roles) {
+    List<SimpleGrantedAuthority> authorities = new ArrayList<>(0);
 
     for (Role role : roles) {
       authorities.add(new SimpleGrantedAuthority(

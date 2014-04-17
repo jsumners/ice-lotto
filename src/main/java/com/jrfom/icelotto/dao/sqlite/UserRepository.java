@@ -1,5 +1,7 @@
 package com.jrfom.icelotto.dao.sqlite;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -93,7 +96,7 @@ public class UserRepository implements UserDao {
     log.debug("Finding all users like term: `{}`", term);
     final NamedParameterJdbcTemplate template =
       new NamedParameterJdbcTemplate(this.jdbcTemplate);
-    return template.queryForList(
+    return template.query(
       "select a.* " +
         "from users a " +
         "join user_characters b " +
@@ -102,23 +105,23 @@ public class UserRepository implements UserDao {
         "or lower(a.display_name) like lower(:term) " +
         "or lower(a.email) like lower(:term) " +
         "or (" +
-          "select count(z.name) from characters z " +
-          "where lower(z.name) like lower(:term) " +
-          "and z.id = b.character_id" +
+        "select count(z.name) from characters z " +
+        "where lower(z.name) like lower(:term) " +
+        "and z.id = b.character_id" +
         ") > 0",
       new HashMap<String, Object>(){{
         put("term", term);
       }},
-      User.class
+      new UserRowMapper()
     );
   }
 
   @Override
   public List<User> findAllOrderByGw2DisplayName() {
     log.debug("Finding all users and ordering by gw2 display name");
-    return this.jdbcTemplate.queryForList(
+    return this.jdbcTemplate.query(
       "select * from users order by gw2display_name asc",
-      User.class
+      new UserRowMapper()
     );
   }
 
@@ -127,7 +130,7 @@ public class UserRepository implements UserDao {
     log.debug("Finding user with gw2 display name: `{}`", gw2DisplayName);
     User user = this.jdbcTemplate.queryForObject(
       "select * from users where lower(gw2display_name) = lower(?)",
-      User.class,
+      new UserRowMapper(),
       gw2DisplayName
     );
 
@@ -146,7 +149,7 @@ public class UserRepository implements UserDao {
       "where lower(a.gw2displayName) = lower(?) " +
       "and a.claimKey = ? " +
       "and a.claimed = 0",
-      User.class,
+      new UserRowMapper(),
       gw2DisplayName,
       claimKey
     );
@@ -163,7 +166,7 @@ public class UserRepository implements UserDao {
     log.debug("Finding user with id: `{}`", id);
     return this.jdbcTemplate.queryForObject(
       "select * from users where id = ?",
-      User.class,
+      new UserRowMapper(),
       id
     );
   }
@@ -198,5 +201,24 @@ public class UserRepository implements UserDao {
     );
 
     return this.findById(user.getId());
+  }
+
+  private class UserRowMapper implements RowMapper<User> {
+    @Override
+    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+      User user = new User();
+      user.setId(rs.getLong("id"));
+      user.setGw2DisplayName(rs.getString("gw2display_name"));
+      user.setDisplayName(rs.getString("display_name"));
+      user.setEmail(rs.getString("email"));
+      user.setPassword(rs.getString("password"));
+      user.setTimeZone(rs.getString("time_zone"));
+      user.setDatetimeFormat(rs.getString("datetime_format"));
+      user.setClaimKey(rs.getString("claim_key"));
+      user.setClaimed(rs.getInt("claimed") > 0);
+      user.setEnabled(rs.getInt("enabled") > 0);
+
+      return user;
+    }
   }
 }

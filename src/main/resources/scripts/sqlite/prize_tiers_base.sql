@@ -1,45 +1,55 @@
 select
   a.id, a.drawn, a.draw_result,
 
-  bb.id as 'game_item.id', bb.description as 'game_item.description',
-  bb.image_url as 'game_item.image_url', bb.min_level as 'game_item.min_level',
-  bb.name as 'game_item.name', bb.rarity as 'game_item.rarity',
+  b.id as 'item1.prize_id', b.count as 'item1.count',
+  bb.id as 'item1.id', bb.description as 'item1.description',
+  bb.image_url as 'item1.image_url', bb.min_level as 'item1.min_level',
+  bb.name as 'item1.name', bb.rarity as 'item1.rarity',
 
-  cc.id as 'game_item.id', cc.description as 'game_item.description',
-  cc.image_url as 'game_item.image_url', cc.min_level as 'game_item.min_level',
-  cc.name as 'game_item.name', cc.rarity as 'game_item.rarity',
+  c.id as 'item2.prize_id', c.count as 'item2.count',
+  cc.id as 'item2.id', cc.description as 'item2.description',
+  cc.image_url as 'item2.image_url', cc.min_level as 'item2.min_level',
+  cc.name as 'item2.name', cc.rarity as 'item2.rarity',
 
-  dd.id as 'game_item.id', dd.description as 'game_item.description',
-  dd.image_url as 'game_item.image_url', dd.min_level as 'game_item.min_level',
-  dd.name as 'game_item.name', dd.rarity as 'game_item.rarity',
+  d.id as 'item3.prize_id', d.count as 'item3.count',
+  dd.id as 'item3.id', dd.description as 'item3.description',
+  dd.image_url as 'item3.image_url', dd.min_level as 'item3.min_level',
+  dd.name as 'item3.name', dd.rarity as 'item3.rarity',
 
-  ee.id as 'game_item.id', ee.description as 'game_item.description',
-  ee.image_url as 'game_item.image_url', ee.min_level as 'game_item.min_level',
-  ee.name as 'game_item.name', ee.rarity as 'game_item.rarity',
+  e.id as 'item4.prize_id', e.count as 'item4.count',
+  ee.id as 'item4.id', ee.description as 'item4.description',
+  ee.image_url as 'item4.image_url', ee.min_level as 'item4.min_level',
+  ee.name as 'item4.name', ee.rarity as 'item4.rarity',
 
-  ff.id as 'game_item.id', ff.description as 'game_item.description',
-  ff.image_url as 'game_item.image_url', ff.min_level as 'game_item.min_level',
-  ff.name as 'game_item.name', ff.rarity as 'game_item.rarity',
+  f.id as 'item5.prize_id', f.count as 'item5.count',
+  ff.id as 'item5.id', ff.description as 'item5.description',
+  ff.image_url as 'item5.image_url', ff.min_level as 'item5.min_level',
+  ff.name as 'item5.name', ff.rarity as 'item5.rarity',
 
-  gg.id as 'game_item.id', gg.description as 'game_item.description',
-  gg.image_url as 'game_item.image_url', gg.min_level as 'game_item.min_level',
-  gg.name as 'game_item.name', gg.rarity as 'game_item.rarity',
+  g.id as 'item6.prize_id', g.count as 'item6.count',
+  gg.id as 'item6.id', gg.description as 'item6.description',
+  gg.image_url as 'item6.image_url', gg.min_level as 'item6.min_level',
+  gg.name as 'item6.name', gg.rarity as 'item6.rarity',
 
-  hh.id as 'game_item.id', hh.description as 'game_item.description',
-  hh.image_url as 'game_item.image_url', hh.min_level as 'game_item.min_level',
-  hh.name as 'game_item.name', hh.rarity as 'game_item.rarity',
+  h.id as 'item7.prize_id', h.count as 'item7.count',
+  hh.id as 'item7.id', hh.description as 'item7.description',
+  hh.image_url as 'item7.image_url', hh.min_level as 'item7.min_level',
+  hh.name as 'item7.name', hh.rarity as 'item7.rarity',
 
-  ii.id as 'game_item.id', ii.description as 'game_item.description',
-  ii.image_url as 'game_item.image_url', ii.min_level as 'game_item.min_level',
-  ii.name as 'game_item.name', ii.rarity as 'game_item.rarity',
+  i.id as 'item8.prize_id', i.count as 'item8.count',
+  ii.id as 'item8.id', ii.description as 'item8.description',
+  ii.image_url as 'item8.image_url', ii.min_level as 'item8.min_level',
+  ii.name as 'item8.name', ii.rarity as 'item8.rarity',
 
-  jj.id as 'game_item.id', jj.description as 'game_item.description',
-  jj.image_url as 'game_item.image_url', jj.min_level as 'game_item.min_level',
-  jj.name as 'game_item.name', jj.rarity as 'game_item.rarity',
+  j.id as 'item9.prize_id', j.count as 'item9.count',
+  jj.id as 'item9.id', jj.description as 'item9.description',
+  jj.image_url as 'item9.image_url', jj.min_level as 'item9.min_level',
+  jj.name as 'item9.name', jj.rarity as 'item9.rarity',
 
-  kk.id as 'game_item.id', kk.description as 'game_item.description',
-  kk.image_url as 'game_item.image_url', kk.min_level as 'game_item.min_level',
-  kk.name as 'game_item.name', kk.rarity as 'game_item.rarity'
+  k.id as 'item10.prize_id', k.count as 'item10.count',
+  kk.id as 'item10.id', kk.description as 'item10.description',
+  kk.image_url as 'item10.image_url', kk.min_level as 'item10.min_level',
+  kk.name as 'item10.name', kk.rarity as 'item10.rarity'
 from prize_tiers a
 
 left join prize_items b
@@ -91,4 +101,3 @@ left join prize_items k
   on k.id = a.item10
 left join game_items kk
   on kk.id = k.game_item
-

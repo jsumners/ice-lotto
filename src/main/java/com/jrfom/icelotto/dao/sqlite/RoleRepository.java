@@ -1,5 +1,7 @@
 package com.jrfom.icelotto.dao.sqlite;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,9 +54,23 @@ public class RoleRepository implements RoleDao {
   @Override
   public List<Role> findAll() {
     log.debug("Finding all roles");
-    return this.jdbcTemplate.queryForList(
-      "select * from roles order by id",
-      Role.class
+    return this.jdbcTemplate.query(
+      "select * from roles order by id asc",
+      new RoleRowMapper()
+    );
+  }
+
+  @Override
+  public List<Role> findAllForUser(Long userId) {
+    log.debug("Finding all roles for user with id: `{}`", userId);
+    return this.jdbcTemplate.query(
+      "select * " +
+        "from roles a " +
+        "join user_roles b " +
+        "on b.role_id = a.id " +
+        "and b.user_id = ?",
+      new RoleRowMapper(),
+      userId
     );
   }
 
@@ -62,8 +79,8 @@ public class RoleRepository implements RoleDao {
     log.debug("Finding role with id: `{}`", id);
     return this.jdbcTemplate.queryForObject(
       "select * from roles a where a.id = ?",
-      Role.class,
-      new Object[]{id}
+      new RoleRowMapper(),
+      id
     );
   }
 
@@ -82,5 +99,17 @@ public class RoleRepository implements RoleDao {
     );
 
     return this.findById(role.getId());
+  }
+
+  private class RoleRowMapper implements RowMapper<Role> {
+    @Override
+    public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
+      Role role = new Role();
+      role.setId(rs.getLong("id"));
+      role.setName(rs.getString("name"));
+      role.setDescription(rs.getString("description"));
+
+      return role;
+    }
   }
 }

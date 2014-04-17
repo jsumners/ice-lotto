@@ -106,7 +106,7 @@ public class PrizePoolRepository implements PrizePoolDao {
   public PrizePool findById(Long id) {
     log.debug("Finding prize pool with id: `{}`", id);
     return this.jdbcTemplate.queryForObject(
-      "select * from prize_pools where id = ?",
+      "select * from prize_pools a where a.id = ?",
       new PoolRowMapper(),
       id
     );

@@ -5,9 +5,11 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.RoleDao;
 import com.jrfom.icelotto.dao.UserDao;
 import com.jrfom.icelotto.exception.UserNotFoundException;
 import com.jrfom.icelotto.model.Character;
+import com.jrfom.icelotto.model.Role;
 import com.jrfom.icelotto.model.User;
 import com.jrfom.icelotto.service.UserService;
 import org.slf4j.Logger;
@@ -22,6 +24,9 @@ public class UserRepositoryService implements UserService {
 
   @Resource
   private UserDao userDao;
+
+  @Resource
+  private RoleDao roleDao;
 
   @Override
   @Transactional
@@ -113,6 +118,11 @@ public class UserRepositoryService implements UserService {
   @Transactional(readOnly = true)
   public List<User> findAllOrderByGw2DisplayName() {
     return this.userDao.findAllOrderByGw2DisplayName();
+  }
+
+  @Override
+  public List<Role> rolesForUser(Long userId) {
+    return this.roleDao.findAllForUser(userId);
   }
 
   @Override

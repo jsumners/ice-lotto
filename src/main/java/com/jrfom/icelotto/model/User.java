@@ -1,5 +1,6 @@
 package com.jrfom.icelotto.model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -68,31 +69,13 @@ public class User {
   @Column
   private Boolean claimed;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JoinTable(
-    name = "user_characters",
-    joinColumns = {
-      @JoinColumn(name = "user_id")
-    },
-    inverseJoinColumns = {
-      @JoinColumn(name = "character_id")
-    }
-  )
+  @Transient
   private Set<Character> characters;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-    name = "user_roles",
-    joinColumns = {
-      @JoinColumn(name = "user_id")
-    },
-    inverseJoinColumns = {
-      @JoinColumn(name = "role_id")
-    }
-  )
-  private Set<Role> roles;
+  @Transient
+  private List<Role> roles;
 
-  protected User() {}
+  public User() {}
 
   public User(String gw2DisplayName) {
     this.gw2DisplayName = gw2DisplayName;
@@ -104,12 +87,7 @@ public class User {
     return this.id;
   }
 
-  /**
-   * For unit testing.
-   *
-   * @param id A number as an identifier.
-   */
-  protected void setId(Long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -189,11 +167,11 @@ public class User {
     return this.characters;
   }
 
-  public Set<Role> getRoles() {
+  public List<Role> getRoles() {
     return this.roles;
   }
 
-  public void setRoles(Set<Role> roles) {
+  public void setRoles(List<Role> roles) {
     this.roles = roles;
   }
 

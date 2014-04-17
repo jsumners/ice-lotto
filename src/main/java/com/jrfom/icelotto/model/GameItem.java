@@ -33,7 +33,7 @@ public class GameItem {
   @Column
   private String imageUrl;
 
-  protected GameItem() {}
+  public GameItem() {}
 
   /**
    * Create an instance and set all properties. Note that {@code id} cannot be
