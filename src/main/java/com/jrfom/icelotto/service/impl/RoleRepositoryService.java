@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
-import com.jrfom.icelotto.dao.sqlite.RoleRepository;
+import com.jrfom.icelotto.dao.RoleDao;
 import com.jrfom.icelotto.exception.RoleNotFoundException;
 import com.jrfom.icelotto.model.Role;
 import com.jrfom.icelotto.service.RoleService;
@@ -20,7 +20,7 @@ public class RoleRepositoryService implements RoleService {
   private static final Logger log = LoggerFactory.getLogger(RoleRepositoryService.class);
 
   @Resource
-  private RoleRepository roleRepository;
+  private RoleDao roleDao;
 
   @Override
   @Transactional
@@ -30,7 +30,7 @@ public class RoleRepositoryService implements RoleService {
     Role record = new Role(name, description);
 
     try {
-      record = this.roleRepository.save(record);
+      record = this.roleDao.save(record);
       result = Optional.of(record);
     } catch (DataAccessException e) {
       log.error("Could not create new role: `{}`", e.getMessage());
@@ -44,13 +44,13 @@ public class RoleRepositoryService implements RoleService {
   @Transactional(rollbackFor = RoleNotFoundException.class)
   public void delete(Long roleId) throws RoleNotFoundException {
     log.debug("Deleting role with id: `{}`", roleId);
-    Role deleted = this.roleRepository.findById(roleId);
+    Role deleted = this.roleDao.findById(roleId);
 
     if (deleted == null) {
       log.debug("Could not find role with id: `{}`", roleId);
       throw new RoleNotFoundException();
     } else {
-      this.roleRepository.delete(roleId);
+      this.roleDao.delete(roleId);
     }
   }
 
@@ -58,7 +58,7 @@ public class RoleRepositoryService implements RoleService {
   @Transactional(readOnly = true)
   public List<Role> findAll() {
     log.debug("Finding all roles");
-    return this.roleRepository.findAll();
+    return this.roleDao.findAll();
   }
 
   @Override
@@ -66,7 +66,7 @@ public class RoleRepositoryService implements RoleService {
   public Optional<Role> findById(Long id) {
     log.debug("Finding role with id: `{}`", id);
     Optional<Role> result = Optional.absent();
-    Role role = this.roleRepository.findById(id);
+    Role role = this.roleDao.findById(id);
 
     if (role != null) {
       result = Optional.of(role);

@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
-import com.jrfom.icelotto.dao.sqlite.GameItemRepository;
+import com.jrfom.icelotto.dao.GameItemDao;
 import com.jrfom.icelotto.exception.GameItemNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
 import com.jrfom.icelotto.service.GameItemService;
@@ -21,7 +21,7 @@ public class GameItemRepositoryService implements GameItemService {
   private static final Logger log = LoggerFactory.getLogger(GameItemRepositoryService.class);
 
   @Resource
-  private GameItemRepository gameItemRepository;
+  private GameItemDao gameItemDao;
 
   @PersistenceContext
   private EntityManager entityManager;
@@ -51,7 +51,7 @@ public class GameItemRepositoryService implements GameItemService {
     GameItem record = new GameItem(id, name, description);
 
     try {
-      record = this.gameItemRepository.save(record);
+      record = this.gameItemDao.save(record);
       result = Optional.of(record);
     } catch (NullPointerException e) {
       log.error("Attempted to create a game item with a null id: `{}`", e.getMessage());
@@ -68,13 +68,13 @@ public class GameItemRepositoryService implements GameItemService {
   @Transactional(rollbackFor = GameItemNotFoundException.class)
   public void delete(Long GameItemId) throws GameItemNotFoundException {
     log.debug("Deleting game item with id: `{}`", GameItemId);
-    GameItem deleted = this.gameItemRepository.findById(GameItemId);
+    GameItem deleted = this.gameItemDao.findById(GameItemId);
 
     if (deleted == null) {
       log.debug("Could not find game item with id: `{}`", GameItemId);
       throw new GameItemNotFoundException();
     } else {
-      this.gameItemRepository.delete(GameItemId);
+      this.gameItemDao.delete(GameItemId);
     }
   }
 
@@ -85,7 +85,7 @@ public class GameItemRepositoryService implements GameItemService {
   @Transactional(readOnly = true)
   public List<GameItem> findAll() {
     log.debug("Finding all game items");
-    return this.gameItemRepository.findAll();
+    return this.gameItemDao.findAll();
   }
 
   /**
@@ -96,7 +96,7 @@ public class GameItemRepositoryService implements GameItemService {
   public Optional<GameItem> findById(Long id) {
     log.debug("Finding game item with id: `{}`", id);
     Optional<GameItem> result = Optional.absent();
-    GameItem item = this.gameItemRepository.findById(id);
+    GameItem item = this.gameItemDao.findById(id);
 
     if (item != null) {
       result = Optional.of(item);

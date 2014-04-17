@@ -3,11 +3,9 @@ package com.jrfom.icelotto.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
-import com.jrfom.icelotto.dao.sqlite.PrizeItemRepository;
+import com.jrfom.icelotto.dao.PrizeItemDao;
 import com.jrfom.icelotto.exception.PrizeItemNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
 import com.jrfom.icelotto.model.PrizeItem;
@@ -23,11 +21,7 @@ public class PrizeItemRepositoryService implements PrizeItemService {
   private static final Logger log = LoggerFactory.getLogger(PrizeItemRepositoryService.class);
 
   @Resource
-  private PrizeItemRepository prizeItemRepository;
-
-  @PersistenceContext
-  private EntityManager entityManager;
-
+  private PrizeItemDao prizeItemDao;
   /**
    * {@inheritDoc}
    */
@@ -39,7 +33,7 @@ public class PrizeItemRepositoryService implements PrizeItemService {
     PrizeItem record = new PrizeItem(gameItem);
 
     try {
-      record = this.prizeItemRepository.save(record);
+      record = this.prizeItemDao.save(record);
       result = Optional.of(record);
     } catch (DataAccessException e) {
       log.error("Could not create prize item record: `{}`", e.getMessage());
@@ -56,13 +50,13 @@ public class PrizeItemRepositoryService implements PrizeItemService {
   @Transactional(rollbackFor = PrizeItemNotFoundException.class)
   public void delete(Long prizeItemId) throws PrizeItemNotFoundException {
     log.debug("Deleting prize item with id: `{}`", prizeItemId);
-    PrizeItem deleted = this.prizeItemRepository.findById(prizeItemId);
+    PrizeItem deleted = this.prizeItemDao.findById(prizeItemId);
 
     if (deleted == null) {
       log.debug("Could not find prize item with id: `{}`", prizeItemId);
       throw new PrizeItemNotFoundException();
     } else {
-      this.prizeItemRepository.delete(prizeItemId);
+      this.prizeItemDao.delete(prizeItemId);
     }
   }
 
@@ -73,7 +67,7 @@ public class PrizeItemRepositoryService implements PrizeItemService {
   @Transactional(readOnly = true)
   public List<PrizeItem> findAll() {
     log.debug("Finding all prize items");
-    return this.prizeItemRepository.findAll();
+    return this.prizeItemDao.findAll();
   }
 
   /**
@@ -84,7 +78,7 @@ public class PrizeItemRepositoryService implements PrizeItemService {
   public Optional<PrizeItem> findById(Long id) {
     log.debug("Finding prize item with id: `{}`", id);
     Optional<PrizeItem> result = Optional.absent();
-    PrizeItem item = this.prizeItemRepository.findById(id);
+    PrizeItem item = this.prizeItemDao.findById(id);
 
     if (item != null) {
       result = Optional.of(item);
@@ -99,6 +93,6 @@ public class PrizeItemRepositoryService implements PrizeItemService {
   @Override
   @Transactional
   public void save(PrizeItem prizeItem) {
-    this.entityManager.merge(prizeItem);
+    this.prizeItemDao.save(prizeItem);
   }
 }

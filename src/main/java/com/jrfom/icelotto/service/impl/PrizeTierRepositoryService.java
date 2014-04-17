@@ -3,12 +3,8 @@ package com.jrfom.icelotto.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
-import com.jrfom.icelotto.dao.GameItemDao;
-import com.jrfom.icelotto.dao.PrizeItemDao;
 import com.jrfom.icelotto.dao.PrizeTierDao;
 import com.jrfom.icelotto.exception.PrizeTierNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
@@ -27,15 +23,6 @@ public class PrizeTierRepositoryService implements PrizeTierService {
 
   @Resource
   private PrizeTierDao prizeTierDao;
-
-  @Resource
-  private PrizeItemDao prizeItemDao;
-
-  @Resource
-  private GameItemDao gameItemDao;
-
-  @PersistenceContext
-  private EntityManager entityManager;
 
   @Override
   @Transactional

@@ -10,28 +10,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PersistenceBeans {
   @Bean
-  public CharacterRepository characterRepository() {
-    return new CharacterRepository();
-  }
-
-  @Bean
   public DrawingService drawingService() {
     return new DrawingRepositoryService();
   }
 
   @Bean
-  public GameItemRepository gameItemRepository() {
-    return new GameItemRepository();
-  }
-
-  @Bean
   public GameItemService gameItemService() {
     return new GameItemRepositoryService();
-  }
-
-  @Bean
-  public PrizeItemRepository prizeItemRepository() {
-    return new PrizeItemRepository();
   }
 
   @Bean
@@ -47,16 +32,6 @@ public class PersistenceBeans {
   @Bean
   public PrizeTierService prizeTierService() {
     return new PrizeTierRepositoryService();
-  }
-
-  @Bean
-  public RoleRepository roleRepository() {
-    return new RoleRepository();
-  }
-
-  @Bean
-  public UserRepository userRepository() {
-    return new UserRepository();
   }
 
   @Bean
@@ -86,7 +61,7 @@ public class PersistenceBeans {
 
   @Bean
   private PrizeDrawResultDao prizeDrawResultDao() {
-    new PrizeDrawResultRepository();
+    return new PrizeDrawResultRepository();
   }
 
   @Bean

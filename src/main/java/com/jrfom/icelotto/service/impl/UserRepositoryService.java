@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
-import com.jrfom.icelotto.dao.sqlite.UserRepository;
+import com.jrfom.icelotto.dao.UserDao;
 import com.jrfom.icelotto.exception.UserNotFoundException;
 import com.jrfom.icelotto.model.Character;
 import com.jrfom.icelotto.model.User;
@@ -21,7 +21,7 @@ public class UserRepositoryService implements UserService {
   private static final Logger log = LoggerFactory.getLogger(UserRepositoryService.class);
 
   @Resource
-  private UserRepository userRepository;
+  private UserDao userDao;
 
   @Override
   @Transactional
@@ -31,7 +31,7 @@ public class UserRepositoryService implements UserService {
     User record = new User(gw2DisplayName);
 
     try {
-      record = this.userRepository.save(record);
+      record = this.userDao.save(record);
       result = Optional.of(record);
     } catch (DataAccessException e) {
       log.error("Could not create new user: `{}`", e.getMessage());
@@ -45,13 +45,13 @@ public class UserRepositoryService implements UserService {
   @Transactional(rollbackFor = UserNotFoundException.class)
   public void delete(Long userId) throws UserNotFoundException {
     log.debug("Deleting user with id: `{}`", userId);
-    User deleted = this.userRepository.findById(userId);
+    User deleted = this.userDao.findById(userId);
 
     if (deleted == null) {
       log.debug("Could not find user with id: `{}", userId);
       throw new UserNotFoundException();
     } else {
-      this.userRepository.delete(userId);
+      this.userDao.delete(userId);
     }
   }
 
@@ -59,7 +59,7 @@ public class UserRepositoryService implements UserService {
   @Transactional(readOnly = true)
   public List<User> findAll() {
     log.debug("Finding all users");
-    return this.userRepository.findAll();
+    return this.userDao.findAll();
   }
 
   @Override
@@ -67,7 +67,7 @@ public class UserRepositoryService implements UserService {
   public Optional<User> findById(Long id) {
     log.debug("Finding user with id: `{}`", id);
     Optional<User> result = Optional.absent();
-    User user = this.userRepository.findById(id);
+    User user = this.userDao.findById(id);
 
     if (user != null) {
       result = Optional.of(user);
@@ -80,7 +80,7 @@ public class UserRepositoryService implements UserService {
   @Transactional
   public Optional<User> findByGw2DisplayName(String gw2DisplayName) {
     Optional<User> result = Optional.absent();
-    User user = this.userRepository.findByGw2DisplayName(gw2DisplayName);
+    User user = this.userDao.findByGw2DisplayName(gw2DisplayName);
 
     if (user != null) {
       result = Optional.of(user);
@@ -93,7 +93,7 @@ public class UserRepositoryService implements UserService {
   @Transactional
   public Optional<User> findByGw2DisplayNameAndClaimKey(String gw2DisplayName, String claimKey) {
     Optional<User> result = Optional.absent();
-    User user = this.userRepository.findByGw2DisplayNameAndClaimKey(gw2DisplayName, claimKey);
+    User user = this.userDao.findByGw2DisplayNameAndClaimKey(gw2DisplayName, claimKey);
 
     if (user != null) {
       result = Optional.of(user);
@@ -106,19 +106,19 @@ public class UserRepositoryService implements UserService {
   @Transactional(readOnly = true)
   public List<User> findAllLike(String term) {
     String actualTerm = (term.contains("%")) ? term : term + "%";
-    return this.userRepository.findAllLike(actualTerm);
+    return this.userDao.findAllLike(actualTerm);
   }
 
   @Override
   @Transactional(readOnly = true)
   public List<User> findAllOrderByGw2DisplayName() {
-    return this.userRepository.findAllOrderByGw2DisplayName();
+    return this.userDao.findAllOrderByGw2DisplayName();
   }
 
   @Override
   @Transactional
   public User save(User user) {
-    return this.userRepository.save(user);
+    return this.userDao.save(user);
   }
 
   @Override

@@ -3,8 +3,6 @@ package com.jrfom.icelotto.service.impl;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import com.google.common.base.Optional;
 import com.jrfom.icelotto.dao.PrizePoolDao;
@@ -23,9 +21,6 @@ public class PrizePoolRepositoryService implements PrizePoolService {
 
   @Resource
   private PrizePoolDao prizePoolDao;
-
-  @PersistenceContext
-  private EntityManager entityManager;
 
   @Override
   public Optional<PrizePool> create() {
@@ -83,6 +78,6 @@ public class PrizePoolRepositoryService implements PrizePoolService {
   @Transactional
   public PrizePool save(PrizePool prizePool) {
     log.debug("Saving prize pool with id: `{}`", prizePool.getId());
-    return this.entityManager.merge(prizePool);
+    return this.prizePoolDao.save(prizePool);
   }
 }

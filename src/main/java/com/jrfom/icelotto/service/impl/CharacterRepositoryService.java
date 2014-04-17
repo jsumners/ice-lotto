@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
-import com.jrfom.icelotto.dao.sqlite.CharacterRepository;
+import com.jrfom.icelotto.dao.CharacterDao;
 import com.jrfom.icelotto.exception.CharacterNotFoundException;
 import com.jrfom.icelotto.model.Character;
 import com.jrfom.icelotto.service.CharacterService;
@@ -20,7 +20,7 @@ public class CharacterRepositoryService implements CharacterService {
   private static final Logger log = LoggerFactory.getLogger(CharacterRepositoryService.class);
 
   @Resource
-  private CharacterRepository characterRepository;
+  private CharacterDao characterDao;
 
   @Override
   @Transactional
@@ -30,7 +30,7 @@ public class CharacterRepositoryService implements CharacterService {
     Character record = new Character(name);
 
     try {
-      record = this.characterRepository.save(record);
+      record = this.characterDao.save(record);
       result = Optional.of(record);
     } catch (DataAccessException e) {
       log.error("Could not create new character: `{}`", e.getMessage());
@@ -44,13 +44,13 @@ public class CharacterRepositoryService implements CharacterService {
   @Transactional(rollbackFor = CharacterNotFoundException.class)
   public void delete(Long characterId) throws CharacterNotFoundException {
     log.debug("Deleting character with id: `{}`", characterId);
-    Character deleted = this.characterRepository.findById(characterId);
+    Character deleted = this.characterDao.findById(characterId);
 
     if (deleted == null) {
       log.debug("Could not find character with id: `{}`", characterId);
       throw new CharacterNotFoundException();
     } else {
-      this.characterRepository.delete(characterId);
+      this.characterDao.delete(characterId);
     }
   }
 
@@ -58,7 +58,7 @@ public class CharacterRepositoryService implements CharacterService {
   @Transactional(readOnly = true)
   public List<Character> findAll() {
     log.debug("Finding all characters");
-    return this.characterRepository.findAll();
+    return this.characterDao.findAll();
   }
 
   @Override
@@ -66,7 +66,7 @@ public class CharacterRepositoryService implements CharacterService {
   public Optional<Character> findById(Long id) {
     log.debug("Finding character with id: `{}`", id);
     Optional<Character> result = Optional.absent();
-    Character character = this.characterRepository.findById(id);
+    Character character = this.characterDao.findById(id);
 
     if (character != null) {
       result = Optional.of(character);
