@@ -1,5 +1,7 @@
 package com.jrfom.icelotto.dao.sqlite;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,9 +55,23 @@ public class CharacterRepository implements CharacterDao {
   @Override
   public List<Character> findAll() {
     log.debug("Finding all characters");
-    return this.jdbcTemplate.queryForList(
+    return this.jdbcTemplate.query(
       "select * from characters order by id",
-      Character.class
+      new CharacterRowMapper()
+    );
+  }
+
+  @Override
+  public List<Character> findAllForUser(Long userId) {
+    log.debug("Finding all characters for user with id: `{}`", userId);
+    return this.jdbcTemplate.query(
+      "select * " +
+        "from characters a " +
+        "join user_characters b " +
+        "on b.character_id = a.id " +
+        "and b.user_id = ?",
+      new CharacterRowMapper(),
+      userId
     );
   }
 
@@ -63,7 +80,7 @@ public class CharacterRepository implements CharacterDao {
     log.debug("Finding character with id: `{}`", id);
     return this.jdbcTemplate.queryForObject(
       "select * from characters where id = ?",
-      Character.class,
+      new CharacterRowMapper(),
       id
     );
   }
@@ -72,5 +89,16 @@ public class CharacterRepository implements CharacterDao {
   @Transactional("jdbcTransactionManager")
   public Character save(Character character) {
     return null;
+  }
+
+  private class CharacterRowMapper implements RowMapper<Character> {
+    @Override
+    public Character mapRow(ResultSet rs, int rowNum) throws SQLException {
+      Character character = new Character();
+      character.setId(rs.getLong("id"));
+      character.setName(rs.getString("name"));
+
+      return character;
+    }
   }
 }

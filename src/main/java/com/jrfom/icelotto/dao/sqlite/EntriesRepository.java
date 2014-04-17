@@ -141,9 +141,8 @@ public class EntriesRepository implements EntriesDao {
     log.debug("Finding entry with id: `{}`", id);
     final Entry entry = this.jdbcTemplate.queryForObject(
       "select * from entries where id = ?",
-      Entry.class,
-      id,
-      new EntryRowMapper()
+      new EntryRowMapper(),
+      id
     );
 
     return entry;

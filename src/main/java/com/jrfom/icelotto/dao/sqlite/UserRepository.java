@@ -108,7 +108,8 @@ public class UserRepository implements UserDao {
         "select count(z.name) from characters z " +
         "where lower(z.name) like lower(:term) " +
         "and z.id = b.character_id" +
-        ") > 0",
+        ") > 0 " +
+        "group by a.id",
       new HashMap<String, Object>(){{
         put("term", term);
       }},

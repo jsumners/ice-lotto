@@ -9,6 +9,7 @@ import com.jrfom.icelotto.model.Role;
 import com.jrfom.icelotto.model.User;
 
 public interface UserService {
+  List<Character> charactersForUser(Long userId);
   Optional<User> create(String gw2DisplayName);
   void delete(Long userId) throws UserNotFoundException;
   List<User> findAll();

@@ -3,7 +3,8 @@ package com.jrfom.icelotto.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jrfom.icelotto.model.*;
+import com.jrfom.icelotto.model.Character;
+import com.jrfom.icelotto.model.User;
 import com.jrfom.icelotto.model.websocket.UserSearchMessage;
 import com.jrfom.icelotto.model.websocket.UserSearchResult;
 import com.jrfom.icelotto.service.UserService;
@@ -38,7 +39,8 @@ public class UserSearchController {
       result.setName(user.getDisplayName());
 
       List<String> characters = new ArrayList<>(0);
-      for (com.jrfom.icelotto.model.Character character : user.getCharacters()) {
+      List<Character> userCharacters = this.userService.charactersForUser(user.getId());
+      for (Character character : userCharacters) {
         characters.add(character.getName());
       }
       result.setTokens(characters);

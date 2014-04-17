@@ -9,6 +9,7 @@ public interface CharacterDao {
   Character create(final Character character);
   void delete(Long characterId) throws CharacterNotFoundException;
   List<Character> findAll();
+  List<Character> findAllForUser(Long userId);
   Character findById(Long id);
   Character save(Character character);
 }

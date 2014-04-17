@@ -6,6 +6,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jrfom.gw2.ApiClient;
 import com.jrfom.gw2.api.model.items.Item;
+import com.jrfom.icelotto.dao.EntriesDao;
 import com.jrfom.icelotto.exception.GameItemNotFoundException;
 import com.jrfom.icelotto.exception.PrizeTierNotFoundException;
 import com.jrfom.icelotto.model.*;
@@ -52,6 +53,9 @@ public class DrawingController {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private EntriesDao entriesDao;
 
   @RequestMapping(
     value = "/drawings",
@@ -226,8 +230,10 @@ public class DrawingController {
       if (prizeTierOptional.isPresent()) {
         PrizeTier prizeTier = prizeTierOptional.get();
         Entry entry = new Entry(user, prizeTier, depositEntryMessage.getAmount());
-        drawing.addEntry(entry);
-        drawing = this.drawingService.save(drawing);
+        entry.setDrawing(drawing);
+        /*drawing.addEntry(entry);
+        drawing = this.drawingService.save(drawing);*/
+        this.entriesDao.create(entry);
 
         response.setSmallPoolTotal(drawing.getSmallPoolTotal());
         response.setLargePoolTotal(drawing.getLargePoolTotal());

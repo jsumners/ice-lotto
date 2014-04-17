@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.CharacterDao;
 import com.jrfom.icelotto.dao.RoleDao;
 import com.jrfom.icelotto.dao.UserDao;
 import com.jrfom.icelotto.exception.UserNotFoundException;
@@ -23,10 +24,18 @@ public class UserRepositoryService implements UserService {
   private static final Logger log = LoggerFactory.getLogger(UserRepositoryService.class);
 
   @Resource
+  private CharacterDao characterDao;
+
+  @Resource
   private UserDao userDao;
 
   @Resource
   private RoleDao roleDao;
+
+  @Override
+  public List<Character> charactersForUser(Long userId) {
+    return this.characterDao.findAllForUser(userId);
+  }
 
   @Override
   @Transactional

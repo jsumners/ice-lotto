@@ -14,7 +14,7 @@ public class Character {
   @Column
   private String name;
 
-  protected Character() {}
+  public Character() {}
 
   public Character(String name) {
     this.name = name;
