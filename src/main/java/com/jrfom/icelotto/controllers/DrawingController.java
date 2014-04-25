@@ -130,11 +130,9 @@ public class DrawingController {
     Optional<Drawing> drawingOptional = this.drawingService.findById(message.getDrawingId());
     if (drawingOptional.isPresent()) {
       Drawing toDuplicate = drawingOptional.get();
+
       PrizePool newSmall = this.copyPool(toDuplicate.getSmallPool());
       PrizePool newLarge = this.copyPool(toDuplicate.getLargePool());
-
-      // No idea why we can't use .create() here but it generates a stupid
-      // "can't persist detached entity" exception.
       this.drawingService.save(new Drawing(startInstant, newSmall, newLarge));
 
       toDuplicate.setDuplicated(true);
@@ -230,7 +228,7 @@ public class DrawingController {
       if (prizeTierOptional.isPresent()) {
         PrizeTier prizeTier = prizeTierOptional.get();
         Entry entry = new Entry(user, prizeTier, depositEntryMessage.getAmount());
-        entry.setDrawing(drawing);
+        entry.setDrawingId(drawing.getId());
         this.entriesDao.create(entry);
 
         response.setSmallPoolTotal(drawing.getSmallPoolTotal());

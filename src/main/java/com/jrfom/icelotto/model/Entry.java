@@ -23,13 +23,9 @@ public class Entry {
   @Convert(converter = InstantConverter.class)
   private Instant enteredDate;
 
-  @ManyToOne
-  @JoinColumn(referencedColumnName = "id")
-  private Drawing drawing;
+  private Long drawingId;
 
-  @ManyToOne
-  @JoinColumn(referencedColumnName = "id")
-  private PrizeTier prizeTier;
+  private Long prizeTierId;
 
   public Entry() {}
 
@@ -37,7 +33,7 @@ public class Entry {
     this.user = user;
     this.amount = amount;
     this.enteredDate = Instant.now();
-    this.prizeTier = prizeTier;
+    this.prizeTierId = prizeTier.getId();
   }
 
   public Long getId() {
@@ -72,19 +68,19 @@ public class Entry {
     this.enteredDate = enteredDate;
   }
 
-  public Drawing getDrawing() {
-    return this.drawing;
+  public Long getDrawingId() {
+    return this.drawingId;
   }
 
-  public void setDrawing(Drawing drawing) {
-    this.drawing = drawing;
+  public void setDrawingId(Long drawingId) {
+    this.drawingId = drawingId;
   }
 
-  public PrizeTier getPrizeTier() {
-    return this.prizeTier;
+  public Long getPrizeTierId() {
+    return this.prizeTierId;
   }
 
-  public void setPrizeTier(PrizeTier prizeTier) {
-    this.prizeTier = prizeTier;
+  public void setPrizeTierId(Long prizeTierId) {
+    this.prizeTierId = prizeTierId;
   }
 }

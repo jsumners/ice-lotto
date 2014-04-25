@@ -354,7 +354,7 @@ public class PrizePool {
 
     for (PrizeTier tier : prizeTiers) {
       for (Entry entry : tier.getEntries()) {
-        if (entry.getPrizeTier().getId().equals(tier.getId())) {
+        if (entry.getPrizeTierId().equals(tier.getId())) {
           entries.add(entry);
         }
       }

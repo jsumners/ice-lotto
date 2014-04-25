@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
+import com.jrfom.icelotto.dao.EntriesDao;
 import com.jrfom.icelotto.dao.PrizeDrawResultDao;
 import com.jrfom.icelotto.dao.PrizeItemDao;
 import com.jrfom.icelotto.dao.PrizeTierDao;
@@ -28,6 +29,9 @@ public class PrizeTierRepository implements PrizeTierDao {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
+
+  @Autowired
+  private EntriesDao entriesDao;
 
   @Autowired
   private PrizeItemDao prizeItemDao;
@@ -156,6 +160,10 @@ public class PrizeTierRepository implements PrizeTierDao {
       Integer drawResultId = (Integer) rs.getObject("draw_result");
       tier.setPrizeDrawResult(
         (drawResultId == null) ? null : prizeDrawResultDao.findById(drawResultId.longValue())
+      );
+
+      tier.setEntries(
+        entriesDao.findAllForTier(tier.getId())
       );
 
       // Yes, this sucks, but it's a helluva lot more peformant that the

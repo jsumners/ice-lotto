@@ -63,7 +63,7 @@ public class PrizeTier {
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinColumn(name = "prize_tier")
-  private Set<Entry> entries;
+  private List<Entry> entries;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinColumn(name = "prize_tier")
@@ -168,11 +168,11 @@ public class PrizeTier {
     this.item10 = item10;
   }
 
-  public Set<Entry> getEntries() {
+  public List<Entry> getEntries() {
     return this.entries;
   }
 
-  public void setEntries(Set<Entry> entries) {
+  public void setEntries(List<Entry> entries) {
     this.entries = entries;
   }
 

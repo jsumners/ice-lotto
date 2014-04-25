@@ -46,7 +46,7 @@ public class EntriesRepository implements EntriesDao {
         "entry_id"
       });
     insert.execute(new HashMap<String, Object>(){{
-      put("drawing_id", entry.getDrawing().getId());
+      put("drawing_id", entry.getDrawingId());
       put("entry_id", key.longValue());
     }});
 
@@ -57,7 +57,7 @@ public class EntriesRepository implements EntriesDao {
         "entry_id"
       });
     insert.execute(new HashMap<String, Object>(){{
-      put("tier_id", entry.getPrizeTier().getId());
+      put("tier_id", entry.getPrizeTierId());
       put("entry_id", key.longValue());
     }});
 
@@ -94,7 +94,13 @@ public class EntriesRepository implements EntriesDao {
   public List<Entry> findAll() {
     log.debug("Finding all entries");
     return this.jdbcTemplate.query(
-      "select * from entries order by id asc",
+      "select a.*, b.drawing_id, c.tier_id " +
+        "from entries a " +
+        "join drawing_entries b " +
+        "on b.entry_id = a.id " +
+        "join tier_entries c " +
+        "on c.entry_id = a.id " +
+        "order by a.id asc",
       new EntryRowMapper()
     );
   }
@@ -103,7 +109,13 @@ public class EntriesRepository implements EntriesDao {
   public List<Entry> findAllForDrawing(Long drawingId) {
     log.debug("Finding all entries for drawing with id: `{}`", drawingId);
     return this.jdbcTemplate.query(
-      "select a.* from entries a join drawing_entries b on b.entry_id = a.id and b.drawing_id = ?",
+      "select a.*, b.drawing_id, c.tier_id " +
+        "from entries a " +
+        "join drawing_entries b " +
+        "on b.entry_id = a.id " +
+        "and b.drawing_id = ? " +
+        "join tier_entries c " +
+        "on c.entry_id = a.id",
       new EntryRowMapper(),
       drawingId
     );
@@ -113,14 +125,16 @@ public class EntriesRepository implements EntriesDao {
   public List<Entry> findAllForPool(Long poolId) {
     log.debug("Finding all entries for pool with id: `{}`", poolId);
     return this.jdbcTemplate.query(
-      "select a.* " +
+      "select a.*, b.darwing_id, d.tier_id " +
         "from entries a " +
         "join drawing_entries b " +
         "on b.entry_id = a.id " +
         "join drawings c " +
         "on c.id = b.drawing_id " +
         "and c.small_pool = ? " +
-        "or c.large_pool = ?",
+        "or c.large_pool = ? " +
+        "join tier_entries d " +
+        "on d.entry_id = a.id",
       new EntryRowMapper(),
       poolId, poolId
     );
@@ -130,7 +144,13 @@ public class EntriesRepository implements EntriesDao {
   public List<Entry> findAllForTier(Long tierId) {
     log.debug("Finding all entries for tier with id: `{}`", tierId);
     return this.jdbcTemplate.query(
-      "select a.* from entries a join tier_entries b on b.entry_id = a.id and b.tier_id = ?",
+      "select a.*, b.tier_id, c.drawing_id " +
+        "from entries a " +
+        "join tier_entries b " +
+        "on b.entry_id = a.id " +
+        "and b.tier_id = ? " +
+        "join drawing_entries c " +
+        "on c.entry_id = a.id",
       new EntryRowMapper(),
       tierId
     );
@@ -140,7 +160,13 @@ public class EntriesRepository implements EntriesDao {
   public Entry findById(Long id) {
     log.debug("Finding entry with id: `{}`", id);
     final Entry entry = this.jdbcTemplate.queryForObject(
-      "select * from entries where id = ?",
+      "select a.*, b.drawing_id, c.tier_id " +
+        "from entries a " +
+        "join drawing_entries b " +
+        "on b.entry_id = a.id " +
+        "join tier_entries c " +
+        "on c.entry_id = a.id " +
+        "where id = ?",
       new EntryRowMapper(),
       id
     );
@@ -162,13 +188,13 @@ public class EntriesRepository implements EntriesDao {
 
     this.jdbcTemplate.update(
       "update drawing_entries set drawing_id = ? where entry_id = ?",
-      entry.getDrawing().getId(),
+      entry.getDrawingId(),
       entryId
     );
 
     this.jdbcTemplate.update(
       "update tier_entries set tier_id = ? where entry_id = ?",
-      entry.getPrizeTier().getId(),
+      entry.getPrizeTierId(),
       entryId
     );
 
@@ -187,6 +213,8 @@ public class EntriesRepository implements EntriesDao {
       Entry result = new Entry();
       result.setId(resultSet.getLong("id"));
       result.setAmount(resultSet.getInt("amount"));
+      result.setDrawingId(resultSet.getLong("drawing_id"));
+      result.setPrizeTierId(resultSet.getLong("tier_id"));
       result.setEnteredDate(Instant.ofEpochSecond(resultSet.getLong("entered_date")));
 
       return result;
