@@ -113,6 +113,70 @@ public class PrizePoolRepository implements PrizePoolDao {
   }
 
   @Override
+  public Integer poolTotal(Long poolId) {
+    log.debug("Finding total amount (pot value) for pool: `{}`", poolId);
+    Boolean smallPool = this.jdbcTemplate.queryForObject(
+      "select count(1) from drawings a where a.small_pool = ?",
+      Boolean.class,
+      poolId
+    );
+    String clause = (smallPool) ? " < 21" : " > 20";
+
+    return this.jdbcTemplate.queryForObject(
+      "select sum(total) from (" +
+        "select sum(d.amount) total " +
+        "from drawings a " +
+        "join prize_pools b " +
+        "on b.id = ? " +
+        "join drawing_entries c " +
+        "on c.drawing_id = a.id " +
+        "join entries d " +
+        "on d.id = c.entry_id " +
+        "join user_entries e " +
+        "on e.entry_id = d.id " +
+        "join users f " +
+        "on f.id = e.user_id " +
+        "group by a.id, f.id " +
+        "having sum(d.amount) " + clause +
+      ")",
+      Integer.class,
+      poolId
+    );
+  }
+
+  @Override
+  public Integer poolTotalForUser(Long poolId, Long userId) {
+    log.debug("Finding total amount (pot value) for [pool: `{}`, user: `{}`]", poolId, userId);
+    Boolean smallPool = this.jdbcTemplate.queryForObject(
+      "select count(1) from drawings a where a.small_pool = ?",
+      Boolean.class,
+      poolId
+    );
+    String clause = (smallPool) ? " < 21" : " > 20";
+
+    return this.jdbcTemplate.queryForObject(
+      "select sum(d.amount) total " +
+        "from drawings a " +
+        "join prize_pools b " +
+        "on b.id = ? " +
+        "join drawing_entries c " +
+        "on c.drawing_id = a.id " +
+        "join entries d " +
+        "on d.id = c.entry_id " +
+        "join user_entries e " +
+        "on e.entry_id = d.id " +
+        "join users f " +
+        "on f.id = e.user_id " +
+        "and f.id = ? " +
+        "group by a.id, f.id " +
+        "having sum(d.amount) " + clause,
+      Integer.class,
+      poolId,
+      userId
+    );
+  }
+
+  @Override
   @Transactional("jdbcTransactionManager")
   public PrizePool save(PrizePool prizePool) {
     log.debug("Updating prize pool record identified by: `{}`", prizePool.getId());
@@ -145,6 +209,7 @@ public class PrizePoolRepository implements PrizePoolDao {
     @Override
     public PrizePool mapRow(ResultSet rs, int rowNum) throws SQLException {
       PrizePool result = new PrizePool();
+      result.setId(rs.getLong("id"));
       result.setTier1(prizeTierDao.findById(rs.getLong("tier1")));
       result.setTier2(prizeTierDao.findById(rs.getLong("tier2")));
       result.setTier3(prizeTierDao.findById(rs.getLong("tier3")));

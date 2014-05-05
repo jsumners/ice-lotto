@@ -122,6 +122,26 @@ public class EntriesRepository implements EntriesDao {
   }
 
   @Override
+  public List<Entry> findAllForDrawingAndUser(Long drawingId, Long userId) {
+    log.debug("Finding all entries for [drawingId: `{}`, userId: `{}`]", drawingId, userId);
+    return this.jdbcTemplate.query(
+      "select a.*, b.drawing_id, c.tier_id " +
+        "from entries a " +
+        "join drawing_entries b " +
+        "on b.entry_id = a.id " +
+        "and b.drawing_id = ? " +
+        "join tier_entries c " +
+        "on c.entry_id = a.id " +
+        "join user_entries d " +
+        "on d.entry_id = a.id " +
+        "and d.user_id = ?",
+      new EntryRowMapper(),
+      drawingId,
+      userId
+    );
+  }
+
+  @Override
   public List<Entry> findAllForPool(Long poolId) {
     log.debug("Finding all entries for pool with id: `{}`", poolId);
     return this.jdbcTemplate.query(

@@ -1,8 +1,6 @@
 package com.jrfom.icelotto.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -46,6 +44,12 @@ public class Drawing {
   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "drawing")
   private Set<Entry> entries;
+
+  @Transient
+  private Integer smallPoolTotal;
+
+  @Transient
+  private Integer largePoolTotal;
 
   public Drawing() {
     this.entries = new HashSet<>(0);
@@ -129,44 +133,20 @@ public class Drawing {
     return this.entries;
   }
 
-  @Transient
   public Integer getSmallPoolTotal() {
-    Integer result = 0;
-    List<Entry> countableEntries = new ArrayList<>(0);
-
-    for (Entry entry : this.entries) {
-      if (entry.getUser().hasEntriesInDrawing(this) &&
-        entry.getUser().isInSmallPoolForDrawing(this))
-      {
-        countableEntries.add(entry);
-      }
-    }
-
-    for (Entry entry : countableEntries) {
-      result += entry.getAmount();
-    }
-
-    return result;
+    return this.smallPoolTotal;
   }
 
-  @Transient
+  public void setSmallPoolTotal(Integer smallPoolTotal) {
+    this.smallPoolTotal = smallPoolTotal;
+  }
+
   public Integer getLargePoolTotal() {
-    Integer result = 0;
-    List<Entry> countableEntries = new ArrayList<>(0);
+    return this.largePoolTotal;
+  }
 
-    for (Entry entry : this.entries) {
-      if (entry.getUser().hasEntriesInDrawing(this) &&
-        entry.getUser().isInLargePoolForDrawing(this))
-      {
-        countableEntries.add(entry);
-      }
-    }
-
-    for (Entry entry : countableEntries) {
-      result += entry.getAmount();
-    }
-
-    return result;
+  public void setLargePoolTotal(Integer largePoolTotal) {
+    this.largePoolTotal = largePoolTotal;
   }
 
   @Transient

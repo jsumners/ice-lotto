@@ -10,5 +10,7 @@ public interface PrizePoolDao {
   void delete(Long prizePoolId) throws PrizePoolNotFoundException;
   List<PrizePool> findAll();
   PrizePool findById(Long id);
+  Integer poolTotal(Long poolId);
+  Integer poolTotalForUser(Long poolId, Long userId);
   PrizePool save(PrizePool prizePool);
 }

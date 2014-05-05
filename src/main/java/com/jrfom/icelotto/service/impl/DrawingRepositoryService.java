@@ -7,6 +7,7 @@ import javax.persistence.PersistenceException;
 
 import com.google.common.base.Optional;
 import com.jrfom.icelotto.dao.DrawingDao;
+import com.jrfom.icelotto.dao.PrizePoolDao;
 import com.jrfom.icelotto.exception.DrawingNotFoundException;
 import com.jrfom.icelotto.model.Drawing;
 import com.jrfom.icelotto.model.PrizePool;
@@ -24,6 +25,9 @@ public class DrawingRepositoryService implements DrawingService {
 
   @Resource
   private DrawingDao drawingDao;
+
+  @Resource
+  private PrizePoolDao prizePoolDao;
 
   @Override
   @Transactional
@@ -78,6 +82,12 @@ public class DrawingRepositoryService implements DrawingService {
     Drawing drawing = this.drawingDao.findById(id);
 
     if (drawing != null) {
+      drawing.setSmallPoolTotal(
+        this.prizePoolDao.poolTotal(drawing.getSmallPool().getId())
+      );
+      drawing.setLargePoolTotal(
+        this.prizePoolDao.poolTotal(drawing.getLargePool().getId())
+      );
       result = Optional.of(drawing);
     }
 

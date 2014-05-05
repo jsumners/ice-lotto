@@ -5,11 +5,10 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
-import com.jrfom.icelotto.dao.CharacterDao;
-import com.jrfom.icelotto.dao.RoleDao;
-import com.jrfom.icelotto.dao.UserDao;
+import com.jrfom.icelotto.dao.*;
 import com.jrfom.icelotto.exception.UserNotFoundException;
 import com.jrfom.icelotto.model.Character;
+import com.jrfom.icelotto.model.Drawing;
 import com.jrfom.icelotto.model.Role;
 import com.jrfom.icelotto.model.User;
 import com.jrfom.icelotto.service.UserService;
@@ -25,6 +24,12 @@ public class UserRepositoryService implements UserService {
 
   @Resource
   private CharacterDao characterDao;
+
+  @Resource
+  private EntriesDao entriesDao;
+
+  @Resource
+  private PrizePoolDao prizePoolDao;
 
   @Resource
   private UserDao userDao;
@@ -127,6 +132,27 @@ public class UserRepositoryService implements UserService {
   @Transactional(readOnly = true)
   public List<User> findAllOrderByGw2DisplayName() {
     return this.userDao.findAllOrderByGw2DisplayName();
+  }
+
+  @Override
+  public Boolean hasEntriesInDrawing(Long userId, Drawing drawing) {
+    return this.entriesDao.findAllForDrawingAndUser(drawing.getId(), userId).size() > 0;
+  }
+
+  @Override
+  public Boolean isInSmallMoneyPoolForDrawing(Long userId, Drawing drawing) {
+    return this.prizePoolDao.poolTotalForUser(
+      drawing.getSmallPool().getId(),
+      userId
+    ) > 0;
+  }
+
+  @Override
+  public Boolean isInLargeMoneyPoolForDrawing(Long userId, Drawing drawing) {
+    return this.prizePoolDao.poolTotalForUser(
+      drawing.getLargePool().getId(),
+      userId
+    ) > 0;
   }
 
   @Override

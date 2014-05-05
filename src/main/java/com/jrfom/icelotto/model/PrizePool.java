@@ -91,6 +91,10 @@ public class PrizePool {
     return this.id;
   }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
+
   public PrizeTier getTier1() {
     return this.tier1;
   }

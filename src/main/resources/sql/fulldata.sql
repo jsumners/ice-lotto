@@ -251,3 +251,69 @@ values (
 insert into drawing_entries (drawing_id, entry_id) values (1, 7);
 insert into tier_entries (tier_id, entry_id) values (1, 7);
 insert into user_entries (user_id, entry_id) values (5, 7);
+
+-- Create an entrant that wins a prize from the small pool but money from
+-- the large pot. 3 + 3 + 3 + 3 + 3 + 3 + 3 = 21
+insert into entries (id, amount, entered_date)
+values (
+  8,
+  3,
+  (select strftime('%s', datetime('now')))
+);
+insert into drawing_entries (drawing_id, entry_id) values (1, 8);
+insert into tier_entries (tier_id, entry_id) values (1, 8);
+insert into user_entries (user_id, entry_id) values (6, 8);
+insert into entries (id, amount, entered_date)
+values (
+  9,
+  3,
+  (select strftime('%s', datetime('now')))
+);
+insert into drawing_entries (drawing_id, entry_id) values (1, 9);
+insert into tier_entries (tier_id, entry_id) values (1, 9);
+insert into user_entries (user_id, entry_id) values (6, 9);
+insert into entries (id, amount, entered_date)
+values (
+  10,
+  3,
+  (select strftime('%s', datetime('now')))
+);
+insert into drawing_entries (drawing_id, entry_id) values (1, 10);
+insert into tier_entries (tier_id, entry_id) values (1, 10);
+insert into user_entries (user_id, entry_id) values (6, 10);
+insert into entries (id, amount, entered_date)
+values (
+  11,
+  3,
+  (select strftime('%s', datetime('now')))
+);
+insert into drawing_entries (drawing_id, entry_id) values (1, 11);
+insert into tier_entries (tier_id, entry_id) values (1, 11);
+insert into user_entries (user_id, entry_id) values (6, 11);
+insert into entries (id, amount, entered_date)
+values (
+  12,
+  3,
+  (select strftime('%s', datetime('now')))
+);
+insert into drawing_entries (drawing_id, entry_id) values (1, 12);
+insert into tier_entries (tier_id, entry_id) values (1, 12);
+insert into user_entries (user_id, entry_id) values (6, 12);
+insert into entries (id, amount, entered_date)
+values (
+  13,
+  3,
+  (select strftime('%s', datetime('now')))
+);
+insert into drawing_entries (drawing_id, entry_id) values (1, 13);
+insert into tier_entries (tier_id, entry_id) values (1, 13);
+insert into user_entries (user_id, entry_id) values (6, 13);
+insert into entries (id, amount, entered_date)
+values (
+  14,
+  3,
+  (select strftime('%s', datetime('now')))
+);
+insert into drawing_entries (drawing_id, entry_id) values (1, 14);
+insert into tier_entries (tier_id, entry_id) values (1, 14);
+insert into user_entries (user_id, entry_id) values (6, 14);
