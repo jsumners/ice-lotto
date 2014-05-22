@@ -132,7 +132,8 @@ public class PrizeTierRepository implements PrizeTierDao {
         "item7 = ?, " +
         "item8 = ?, " +
         "item9 = ?, " +
-        "item10 = ?",
+        "item10 = ? " +
+        "where id = ?",
       prizeTier.isDrawn(),
       (prizeTier.getPrizeDrawResult() == null) ? null : prizeTier.getPrizeDrawResult().getId(),
       (prizeTier.getItem1() == null) ? null : prizeTier.getItem1().getId(),
@@ -144,7 +145,8 @@ public class PrizeTierRepository implements PrizeTierDao {
       (prizeTier.getItem7() == null) ? null : prizeTier.getItem7().getId(),
       (prizeTier.getItem8() == null) ? null : prizeTier.getItem8().getId(),
       (prizeTier.getItem9() == null) ? null : prizeTier.getItem9().getId(),
-      (prizeTier.getItem10() == null) ? null : prizeTier.getItem10().getId()
+      (prizeTier.getItem10() == null) ? null : prizeTier.getItem10().getId(),
+      prizeTier.getId()
     );
 
     return this.findById(prizeTier.getId());
@@ -190,7 +192,7 @@ public class PrizeTierRepository implements PrizeTierDao {
       }
       
       Integer item2PrizeId = (Integer) rs.getObject("item2.prize_id");
-      if (item1PrizeId != null) {
+      if (item2PrizeId != null) {
         PrizeItem prizeItem = new PrizeItem();
         GameItem gameItem = new GameItem();
 

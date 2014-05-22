@@ -1,15 +1,20 @@
 package com.jrfom.icelotto.dao.sqlite;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
 import com.jrfom.icelotto.dao.GameItemDao;
 import com.jrfom.icelotto.exception.GameItemNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
+import com.jrfom.icelotto.model.ItemRarity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +39,7 @@ public class GameItemRepository implements GameItemDao {
         "rarity"
       });
 
-    Number key = insert.executeAndReturnKey(new HashMap<String, Object>() {{
+    int rows = insert.execute(new HashMap<String, Object>() {{
       put("id", gameItem.getId());
       put("description", gameItem.getDescription());
       put("image_url", gameItem.getImageUrl());
@@ -43,7 +48,7 @@ public class GameItemRepository implements GameItemDao {
       put("rarity", gameItem.getRarity());
     }});
 
-    return this.findById(key.longValue());
+    return this.findById(gameItem.getId());
   }
 
   @Override
@@ -58,20 +63,27 @@ public class GameItemRepository implements GameItemDao {
   @Override
   public List<GameItem> findAll() {
     log.debug("Finding all game items");
-    return this.jdbcTemplate.queryForList(
+    return this.jdbcTemplate.query(
       "select * from game_items order by id",
-      GameItem.class
+      new GameItemRowMapper()
     );
   }
 
   @Override
   public GameItem findById(Long id) {
     log.debug("Finding game item with id: `{}`", id);
-    GameItem result = this.jdbcTemplate.queryForObject(
-      "select * from game_items a where a.id = ?",
-      GameItem.class,
-      new Object[] {id}
-    );
+    GameItem result = null;
+
+    try {
+      result = this.jdbcTemplate.queryForObject(
+        "select * from game_items a where a.id = ?",
+        new GameItemRowMapper(),
+        id
+      );
+    } catch (DataAccessException e) {
+      log.error("Could not find game item with id: `{}`", id);
+      log.debug(e.toString());
+    }
 
     return result;
   }
@@ -96,5 +108,26 @@ public class GameItemRepository implements GameItemDao {
     );
 
     return this.findById(gameItem.getId());
+  }
+
+  private class GameItemRowMapper implements RowMapper<GameItem> {
+    @Override
+    public GameItem mapRow(ResultSet rs, int rowNum) throws SQLException {
+      GameItem gameItem = null;
+
+      Long id = rs.getLong("id");
+      if (!id.equals(0)) {
+        gameItem = new GameItem();
+
+        gameItem.setId(id);
+        gameItem.setDescription(rs.getString("description"));
+        gameItem.setImageUrl(rs.getString("image_url"));
+        gameItem.setMinLevel(rs.getInt("min_level"));
+        gameItem.setName(rs.getString("name"));
+        gameItem.setRarity(ItemRarity.values()[rs.getInt("rarity")]);
+      }
+
+      return gameItem;
+    }
   }
 }

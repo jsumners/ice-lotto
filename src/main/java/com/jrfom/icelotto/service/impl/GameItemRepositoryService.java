@@ -21,6 +21,18 @@ public class GameItemRepositoryService implements GameItemService {
   @Resource
   private GameItemDao gameItemDao;
 
+  @Override
+  public Optional<GameItem> create(GameItem gameItem) {
+    GameItem created = this.gameItemDao.create(gameItem);
+    Optional<GameItem> result = Optional.absent();
+
+    if (created != null) {
+      result = Optional.of(created);
+    }
+
+    return result;
+  }
+
   /**
    * {@inheritDoc}
    */

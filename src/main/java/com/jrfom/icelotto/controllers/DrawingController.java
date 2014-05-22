@@ -360,9 +360,9 @@ public class DrawingController {
         );
         this.imageDownloader.downloadImageAtUrlAs(url, "icons/" + item.getItemId());
         gameItem.setImageUrl(url);
-      }
 
-      this.gameItemService.save(gameItem);
+        this.gameItemService.create(gameItem);
+      }
     }
 
     return gameItem;

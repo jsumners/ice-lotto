@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.google.common.base.Optional;
+import com.jrfom.icelotto.dao.PrizeItemDao;
 import com.jrfom.icelotto.dao.PrizeTierDao;
 import com.jrfom.icelotto.exception.PrizeTierNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
@@ -23,6 +24,9 @@ public class PrizeTierRepositoryService implements PrizeTierService {
 
   @Resource
   private PrizeTierDao prizeTierDao;
+
+  @Resource
+  private PrizeItemDao prizeItemDao;
 
   @Override
   @Transactional
@@ -100,6 +104,7 @@ public class PrizeTierRepositoryService implements PrizeTierService {
 
     PrizeItem prizeItem = new PrizeItem(gameItem);
     prizeItem.setCount(count);
+    prizeItem = this.prizeItemDao.create(prizeItem);
 
     PrizeTier tier = tierOptional.get();
     switch (position) {

@@ -7,6 +7,8 @@ import com.jrfom.icelotto.exception.GameItemNotFoundException;
 import com.jrfom.icelotto.model.GameItem;
 
 public interface GameItemService {
+  Optional<GameItem> create(GameItem gameItem);
+
   /**
    * Create a new {@link com.jrfom.icelotto.model.GameItem} entry in the
    * database with the specified {@code id} and {@code name}.
